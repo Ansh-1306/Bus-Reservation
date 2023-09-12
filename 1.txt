@@ -1,0 +1,997 @@
+import java.util.*;
+import javax.swing.JOptionPane;
+
+public class GameZone
+{
+    static int Balance=1000;
+    public static void main(String[] args)
+    {
+        System.out.println("====================================================================================================================================");
+        System.out.println("********************************************************     GAME ZONE     *********************************************************");
+        System.out.println("====================================================================================================================================");
+        Scanner sc=new Scanner(System.in);
+        int flag=0;
+        while(flag==0) {
+            System.out.println();
+            System.out.println("Balance="+Balance);
+            System.out.println("\n1-> Guess The Number   === 200");
+            System.out.println("2-> MineSweeper        === 500");
+            System.out.println("3-> Tic Tac Toe        === 350");
+            System.out.println("4-> Recharge");
+            System.out.println("5-> Exit");
+            int choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    if(Balance>=200){
+
+                        Balance-=200;
+                        GuessTheNumber gtn=new GuessTheNumber();
+                    }
+                    else{
+                        System.out.println("Insufficient balance---Please recharge your card");
+                        recharge();
+                    }
+                    break;
+                case 2:
+                    if(Balance>=500){
+                        Balance-=500;
+                        MineSweeper ms=new MineSweeper();
+                    }
+                    else{
+                        System.out.println("Insufficient balance---Please recharge your card");
+                        recharge();
+                    }
+                    break;
+                case 3:
+                    if(Balance>=350){
+                        Balance-=350;
+                        TicTacToe ttt=new TicTacToe();
+
+                    }
+                    else{
+                        System.out.println("You don't have balance---Please Recharge your card");
+                        recharge();
+                    }
+                    break;
+                case 4:
+                    recharge();
+                    break;
+                case 5:
+                    flag=1;
+                    break;
+                default:
+                    System.out.println("Enter Valid Choice");
+            }
+        }
+    }
+    public static void recharge()
+    {
+        Scanner sc=new Scanner(System.in);
+        String amt;
+        amt=JOptionPane.showInputDialog("Enter Recharge Amount");
+        int amt1=Integer.parseInt(amt);
+        Balance+=amt1;
+    }
+}
+class MineSweeper extends GameZone
+{
+    int[][] fieldVisible = new int[10][10];
+    int[][] fieldHidden = new int[10][10];
+    MineSweeper()
+    {
+        System.out.println("\n\n================Welcome to Minesweeper ! ================\n");
+        setupField(1);
+
+        boolean flag = true;
+        while(flag)
+        {
+            displayVisible();
+            flag = playMove();
+            if(checkWin())
+            {
+                displayHidden();
+                System.out.println("\n================You WON!!!================");
+                break;
+            }
+        }
+    }
+    public void setupField(int diff)   // Initialise board
+    {
+        int var=0;
+        while(var!=10)
+        {
+            Random random = new Random();
+            int i = random.nextInt(10);
+            int j = random.nextInt(10);
+            //System.out.println("i: " + i + " j: " + j);
+            fieldHidden[i][j] = 100;
+            var++;
+        }
+        buildHidden();
+    }
+    public void buildHidden()     // creates the hidden elements of the board
+    {
+        for(int i=0; i<10; i++)
+        {
+            for(int j=0; j<10; j++)
+            {
+                int cnt=0;
+                if(fieldHidden[i][j]!=100)
+                {
+
+                    if(i!=0)
+                    {
+                        if(fieldHidden[i-1][j]==100) cnt++;
+                        if(j!=0)
+                        {
+                            if(fieldHidden[i-1][j-1]==100) cnt++;
+                        }
+
+                    }
+                    if(i!=9)
+                    {
+                        if(fieldHidden[i+1][j]==100) cnt++;
+                        if(j!=9)
+                        {
+                            if(fieldHidden[i+1][j+1]==100) cnt++;
+                        }
+                    }
+                    if(j!=0)
+                    {
+                        if(fieldHidden[i][j-1]==100) cnt++;
+                        if(i!=9)
+                        {
+                            if(fieldHidden[i+1][j-1]==100) cnt++;
+                        }
+                    }
+                    if(j!=9)
+                    {
+                        if(fieldHidden[i][j+1]==100) cnt++;
+                        if(i!=0)
+                        {
+                            if(fieldHidden[i-1][j+1]==100) cnt++;
+                        }
+                    }
+
+                    fieldHidden[i][j] = cnt;
+                }
+            }
+        }
+    }
+    public void displayVisible()  // prints opened tiles of the board
+    {
+        System.out.print("\t ");
+        for(int i=0; i<10; i++)
+        {
+            System.out.print(" " + i + "  ");
+        }
+        System.out.print("\n");
+        for(int i=0; i<10; i++)
+        {
+            System.out.print(i + "\t| ");
+            for(int j=0; j<10; j++)
+            {
+                if(fieldVisible[i][j]==0)
+                {
+                    System.out.print("?");
+                }
+                else if(fieldVisible[i][j]==50)
+                {
+                    System.out.print(" ");
+                }
+                else
+                {
+                    System.out.print(fieldVisible[i][j]);
+                }
+                System.out.print(" | ");
+            }
+            System.out.print("\n");
+        }
+    }
+    public boolean playMove()     // Takes player input
+    {
+        Scanner sc= new Scanner(System.in);
+        System.out.print("\nEnter Row Number: ");
+        int i= sc.nextInt();
+        System.out.print("Enter Column Number: ");
+        int j= sc.nextInt();
+
+        if(i<0 || i>9 || j<0 || j>9 || fieldVisible[i][j]!=0)
+        {
+            System.out.print("\nIncorrect Input!!");
+            return true;
+        }
+
+        if(fieldHidden[i][j]==100)
+        {
+            displayHidden();
+            System.out.print("Oops! You stepped on a mine!\n============GAME OVER============");
+            return false;
+        }
+        else if(fieldHidden[i][j]==0)
+        {
+            fixVisible(i, j);
+        }
+        else
+        {
+            fixNeighbours(i, j);
+        }
+
+        return true;
+    }
+    public void fixVisible(int i, int j)  //Fixes Visible tiles
+    {
+        fieldVisible[i][j] = 50;
+        if(i!=0)
+        {
+            fieldVisible[i-1][j] = fieldHidden[i-1][j];
+            if(fieldVisible[i-1][j]==0) fieldVisible[i-1][j] = 50;
+            if(j!=0)
+            {
+                fieldVisible[i-1][j-1] = fieldHidden[i-1][j-1];
+                if(fieldVisible[i-1][j-1]==0) fieldVisible[i-1][j-1]=50;
+
+            }
+        }
+        if(i!=9)
+        {
+            fieldVisible[i+1][j]=fieldHidden[i+1][j];
+            if(fieldVisible[i+1][j]==0) fieldVisible[i+1][j]=50;
+            if(j!=9)
+            {
+                fieldVisible[i+1][j+1]= fieldHidden[i+1][j+1];
+                if(fieldVisible[i+1][j+1]==0) fieldVisible[i+1][j+1] = 50;
+            }
+        }
+        if(j!=0)
+        {
+            fieldVisible[i][j-1]=fieldHidden[i][j-1];
+            if(fieldVisible[i][j-1]==0) fieldVisible[i][j-1] = 50;
+            if(i!=9)
+            {
+                fieldVisible[i+1][j-1]=fieldHidden[i+1][j-1];
+                if(fieldVisible[i+1][j-1]==0) fieldVisible[i+1][j-1] = 50;
+            }
+        }
+        if(j!=9)
+        {
+            fieldVisible[i][j+1]=fieldHidden[i][j+1];
+            if(fieldVisible[i][j+1]==0) fieldVisible[i][j+1] = 50;
+            if(i!=0)
+            {
+                fieldVisible[i-1][j+1]=fieldHidden[i-1][j+1];
+                if(fieldVisible[i-1][j+1]==0) fieldVisible[i-1][j+1] = 50;
+            }
+        }
+    }
+    public void fixNeighbours(int i, int j) //Fixes Neighboring tiles
+    {
+        Random random = new Random();
+        int x = random.nextInt()%4;
+
+        fieldVisible[i][j] = fieldHidden[i][j];
+
+        if(x==0)
+        {
+            if(i!=0)
+            {
+                if(fieldHidden[i-1][j]!=100)
+                {
+                    fieldVisible[i-1][j] = fieldHidden[i-1][j];
+                    if(fieldVisible[i-1][j]==0)  fieldVisible[i-1][j] = 50;
+                }
+            }
+            if(j!=0)
+            {
+                if(fieldHidden[i][j-1]!=100)
+                {
+                    fieldVisible[i][j-1] = fieldHidden[i][j-1];
+                    if(fieldVisible[i][j-1]==0)  fieldVisible[i][j-1] = 50;
+                }
+
+            }
+            if(i!=0 && j!=0)
+            {
+                if(fieldHidden[i-1][j-1]!=100)
+                {
+                    fieldVisible[i-1][j-1] = fieldHidden[i-1][j-1];
+                    if(fieldVisible[i-1][j-1]==0)  fieldVisible[i-1][j-1] = 50;
+                }
+
+            }
+        }
+        else if(x==1)
+        {
+            if(i!=0)
+            {
+                if(fieldHidden[i-1][j]!=100)
+                {
+                    fieldVisible[i-1][j] = fieldHidden[i-1][j];
+                    if(fieldVisible[i-1][j]==0)  fieldVisible[i-1][j] = 50;
+                }
+            }
+            if(j!=9)
+            {
+                if(fieldHidden[i][j+1]!=100)
+                {
+                    fieldVisible[i][j+1] = fieldHidden[i][j+1];
+                    if(fieldVisible[i][j+1]==0)  fieldVisible[i][j+1] = 50;
+                }
+
+            }
+            if(i!=0 && j!=9)
+            {
+                if(fieldHidden[i-1][j+1]!=100)
+                {
+                    fieldVisible[i-1][j+1] = fieldHidden[i-1][j+1];
+                    if(fieldVisible[i-1][j+1]==0)  fieldVisible[i-1][j+1] = 50;
+                }
+            }
+        }
+        else if(x==2)
+        {
+            if(i!=9)
+            {
+                if(fieldHidden[i+1][j]!=100)
+                {
+                    fieldVisible[i+1][j] = fieldHidden[i+1][j];
+                    if(fieldVisible[i+1][j]==0)  fieldVisible[i+1][j] = 50;
+                }
+            }
+            if(j!=9)
+            {
+                if(fieldHidden[i][j+1]!=100)
+                {
+                    fieldVisible[i][j+1] = fieldHidden[i][j+1];
+                    if(fieldVisible[i][j+1]==0)  fieldVisible[i][j+1] = 50;
+                }
+
+            }
+            if(i!=9 && j!=9)
+            {
+                if(fieldHidden[i+1][j+1]!=100)
+                {
+                    fieldVisible[i+1][j+1] = fieldHidden[i+1][j+1];
+                    if(fieldVisible[i+1][j+1]==0)  fieldVisible[i+1][j+1] = 50;
+                }
+            }
+        }
+        else
+        {
+            if(i!=9)
+            {
+                if(fieldHidden[i+1][j]!=100)
+                {
+                    fieldVisible[i+1][j] = fieldHidden[i+1][j];
+                    if(fieldVisible[i+1][j]==0)  fieldVisible[i+1][j] = 50;
+                }
+            }
+            if(j!=0)
+            {
+                if(fieldHidden[i][j-1]!=100)
+                {
+                    fieldVisible[i][j-1] = fieldHidden[i][j-1];
+                    if(fieldVisible[i][j-1]==0)  fieldVisible[i][j-1] = 50;
+                }
+
+            }
+            if(i!=9 && j!=0)
+            {
+                if(fieldHidden[i+1][j-1]!=100)
+                {
+                    fieldVisible[i+1][j-1] = fieldHidden[i+1][j-1];
+                    if(fieldVisible[i+1][j-1]==0)  fieldVisible[i+1][j-1] = 50;
+                }
+            }
+        }
+    }
+    public boolean checkWin()    // Checks win condition
+    {
+        for(int i=0; i<10; i++)
+        {
+            for(int j=0; j<10; j++)
+            {
+                if(fieldVisible[i][j]==0)
+                {
+                    if(fieldHidden[i][j]!=100)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    public void displayHidden()    // Displays Hidden elements
+    {
+        System.out.print("\t ");
+        for(int i=0; i<10; i++)
+        {
+            System.out.print(" " + i + "  ");
+        }
+        System.out.print("\n");
+        for(int i=0; i<10; i++)
+        {
+            System.out.print(i + "\t| ");
+            for(int j=0; j<10; j++)
+            {
+                if(fieldHidden[i][j]==0)
+                {
+                    System.out.print(" ");
+                }
+                else if(fieldHidden[i][j]==100)
+                {
+                    System.out.print("X");
+                }
+                else
+                {
+                    System.out.print(fieldHidden[i][j]);
+                }
+                System.out.print(" | ");
+            }
+            System.out.print("\n");
+        }
+    }
+}
+class GuessTheNumber extends GameZone
+{
+    Scanner sc=new Scanner(System.in);
+    int n=1000;
+
+
+    ArrayList<Integer> even_odd;   //declaring arraylist
+    ArrayList<Integer> prime;
+    ArrayList<Integer> sum;
+    ArrayList<Integer> prod;
+    ArrayList<Integer> digit;
+    ArrayList<Integer> div3;
+    ArrayList<Integer> div5;
+    ArrayList<Integer> div7;
+    ArrayList<Integer> dig10;
+    ArrayList<Integer> range;
+
+    GuessTheNumber()
+    {
+        System.out.println("\n\n================ Welcome to Guess The Number ! ================\n");
+        System.out.println("Think Of A Number From 1 to 1000 In Your Mind");
+        System.out.println("Press Enter When You Are Ready");
+        sc.nextLine();
+
+        ArrayList<Integer> num= new ArrayList<>(n);
+        for(int i=1;i<=n;i++)
+        {
+            num.add(i);                  // Creating arraylist for all numbers
+        }
+
+
+
+        System.out.println("1-> Even");  // Asking questions
+        System.out.println("2-> Odd");
+        int st1=sc.nextInt();
+        if(st1==1)
+        {
+            even_odd =Even();
+        }
+        else
+        {
+            even_odd =Odd();
+        }
+        num.retainAll(even_odd);
+
+
+        System.out.println("1-> Prime");
+        System.out.println("2-> Not Prime");
+        int st2=sc.nextInt();
+        if(st2==1)
+        {
+            prime=Prime();
+        }
+        else
+        {
+            prime=NotPrime();
+        }
+        num.retainAll(prime);
+
+
+        System.out.print("Enter Sum of digits : ");
+        int st3= sc.nextInt();
+        sum=Sum(st3);
+        num.retainAll(sum);
+
+
+        System.out.print("Enter Product of digits : ");
+        int st8= sc.nextInt();
+        prod=Product(st8);
+        num.retainAll(prod);
+
+
+        System.out.print("Enter number of digits : ");
+        int st4=sc.nextInt();
+        digit=Digit(st4);
+        num.retainAll(digit);
+
+
+        System.out.print("Enter 10's digit : ");
+        int st9=sc.nextInt();
+        dig10=Digit10(st9);
+        num.retainAll(dig10);
+
+
+        System.out.println("1-> Divisible by 3");
+        System.out.println("2-> Not divisible by 3");
+        int st5= sc.nextInt();
+        if(st5==1)
+        {
+            div3 = Div3();
+        }
+        else if(st5==2)
+        {
+            div3= NotDiv3();
+        }
+        num.retainAll(div3);
+
+
+        System.out.println("1-> Divisible by 5");
+        System.out.println("2-> Not divisible by 5");
+        int st6= sc.nextInt();
+        if(st6==1)
+        {
+            div5 = Div5();
+        }
+        else if(st6==2)
+        {
+            div5=NotDiv5();
+        }
+        num.retainAll(div5);
+
+
+        System.out.println("1-> Divisible by 7");
+        System.out.println("2-> Not divisible by 7");
+        int st7= sc.nextInt();
+        if(st7==1)
+        {
+            div7 = Div7();
+        }
+        else
+        {
+            div7=NotDiv7();
+        }
+        num.retainAll(div7);
+
+
+        System.out.println("Enter range in following format");
+        System.out.println("eg:- for 1-100 enter 100");
+        System.out.println("eg:- for 101-200 enter 200 and so on");
+        int st11=sc.nextInt();
+        range=Range(st11);
+        num.retainAll(range);
+
+
+        for (Integer i:num)
+        {
+            System.out.println("Your Number must be : "+ i);  // Printing Answer
+        }
+    }
+
+    // Methods to calculate answers
+
+    ArrayList<Integer> Even()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%2==0)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> Odd()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%2==1)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> Prime()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            int count=0;
+            for(int j=2;j<i;j++)
+            {
+                if(i%j==0)
+                    count++;
+            }
+            if(count==0)
+                temp.add(i);
+        }
+        return temp;
+    }
+    ArrayList<Integer> NotPrime()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            int count=0;
+            for(int j=2;j<i;j++)
+            {
+                if(i%j==0)
+                    count++;
+            }
+            if(count!=0)
+                temp.add(i);
+        }
+        return temp;
+    }
+    ArrayList<Integer> Sum(int s)
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            int j=i;
+            int sum=0;
+            while(j>0)
+            {
+                int rem=j%10;
+                sum=sum+rem;
+                j=j/10;
+            }
+            if(sum==s)
+                temp.add(i);
+        }
+        return temp;
+    }
+    ArrayList<Integer> Product(int p)
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            int j=i;
+            int prod=1;
+            while(j>0)
+            {
+                int rem=j%10;
+                prod=prod*rem;
+                j=j/10;
+            }
+            if(prod==p)
+                temp.add(i);
+        }
+        return temp;
+    }
+    ArrayList<Integer> Digit(int d)
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            int j=i;
+            int count=0;
+            while(j>0)
+            {
+                count++;
+                j=j/10;
+            }
+            if(count==d)
+                temp.add(i);
+        }
+        return temp;
+    }
+    ArrayList<Integer> Div3()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%3==0)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> NotDiv3()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%3!=0)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> Div5()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%5==0)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> NotDiv5()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%5!=0)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> Div7()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%7==0)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> NotDiv7()
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            if(i%7!=0)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> Digit10(int d)
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=1;i<=n;i++)
+        {
+            int j=i;
+            j=j/10;
+            j=j%10;
+            if(j==d)
+            {
+                temp.add(i);
+            }
+        }
+        return temp;
+    }
+    ArrayList<Integer> Range(int d)
+    {
+        ArrayList<Integer> temp= new ArrayList<>();
+        for(int i=d-99;i<=d;i++)
+        {
+            temp.add(i);
+        }
+        return temp;
+    }
+
+}
+class TicTacToe extends GameZone
+{
+    char[][] board;
+    int count=0;
+    TicTacToe()
+    {
+        System.out.println("\n\n================ Welcome to Tic Tac Toe ! ================\n");
+        board=new char[3][3];
+        System.out.println("-------------");
+        System.out.println("| 1 | 2 | 3 |");
+        System.out.println("-------------");
+        System.out.println("| 4 | 5 | 6 |");
+        System.out.println("-------------");
+        System.out.println("| 7 | 8 | 9 |");
+        System.out.println("-------------");
+        initializeBoard();
+        printBoard();
+        makeMove();
+    }
+    void initializeBoard()   // Initialise the board with space characters
+    {
+        for(int i=0;i<3;i++)
+        {
+            for(int j=0;j<3;j++)
+            {
+                board[i][j]=' ';
+            }
+        }
+    }
+    void printBoard()        // Print Board after every move
+    {
+        System.out.println("-------------");
+        for(int i=0;i<3;i++)
+        {
+            System.out.print("| ");
+            for(int j=0;j<3;j++)
+            {
+                System.out.print(board[i][j]+" | ");
+            }
+            System.out.println();
+            System.out.println("-------------");
+        }
+    }
+    void placeMark(int pos,char mark,String name)  // Placing mark on board
+    {
+        if(pos>=1 && pos <=9)
+        {
+            if(pos==1)
+                board[0][0]=mark;
+            else if (pos==2)
+                board[0][1]=mark;
+            else if (pos==3)
+                board[0][2]=mark;
+            else if (pos==4)
+                board[1][0]=mark;
+            else if (pos==5)
+                board[1][1]=mark;
+            else if (pos==6)
+                board[1][2]=mark;
+            else if (pos==7)
+                board[2][0]=mark;
+            else if (pos==8)
+                board[2][1]=mark;
+            else
+                board[2][2]=mark;
+        }
+        else
+        {
+            System.out.println("Invalid Input");
+
+        }
+        printBoard();
+        count++;
+        if(checkColWin() || checkRowWin() || checkDiagWin())
+        {
+            System.out.println(name+" Wins");
+        }
+        else
+        {
+            if(name=="Player"&& count <=8)
+            {
+                AIMove();
+            }
+            else if(name=="Player" && count ==9)
+            {
+                System.out.println("Match Draw");
+            }
+            else
+            {
+                makeMove();
+            }
+        }
+    }
+    boolean checkColWin()   // Check column win
+    {
+        for(int i=0;i<3;i++)
+        {
+            if(board[0][i]!= ' ' && board[0][i]== board[1][i] && board[1][i]==board[2][i])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    boolean checkRowWin()   // Check row win
+    {
+        for(int i=0;i<3;i++)
+        {
+            if(board[i][0]!= ' ' && board[i][0]== board[i][1] && board[i][1]==board[i][2])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    boolean checkDiagWin()  // Check diagonal win
+    {
+        if(board[0][0]!= ' ' && board[0][0]== board[1][1] && board[1][1]==board[2][2]
+                || board[0][2]!= ' ' && board[0][2]== board[1][1] && board[1][1]==board[2][0])
+        {
+            return true;
+        }
+
+        return false;
+    }
+    void makeMove()         // Player Move
+    {
+        Scanner sc=new Scanner(System.in);
+        System.out.print("Enter position : ");
+        int pos= sc.nextInt();
+        if(isValid(pos))
+        {
+            placeMark(pos,'X',"Player");
+        }
+        else
+        {
+            System.out.println("Invalid Move");
+            makeMove();
+        }
+    }
+    void AIMove()           // Computer Move
+    {
+        Random r=new Random();
+        int pos=r.nextInt(8)+1;
+        if(isValid(pos))
+        {
+            placeMark(pos,'O',"Computer");
+        }
+        else
+        {
+
+            AIMove();
+        }
+    }
+    boolean isValid(int pos) // Check if the move is valid
+    {
+        int row=0,col=0;
+        if(pos>=1 && pos<=9)
+        {
+            if(pos==1)
+            {
+                row=0;
+                col=0;
+            }
+            else if (pos==2)
+            {
+                row=0;
+                col=1;
+            }
+            else if (pos==3)
+            {
+                row=0;
+                col=2;
+            }
+            else if (pos==4)
+            {
+                row=1;
+                col=0;
+            }
+            else if (pos==5)
+            {
+                row=1;
+                col=1;
+            }
+            else if (pos==6)
+            {
+                row=1;
+                col=2;
+            }
+            else if (pos==7)
+            {
+                row=2;
+                col=0;
+            }
+            else if (pos==8)
+            {
+                row=2;
+                col=1;
+            }
+            else
+            {
+                row=2;
+                col=2;
+            }
+        }
+        if(board[row][col]==' ')
+        {
+            return true;
+        }
+        return false;
+    }
+
+}
