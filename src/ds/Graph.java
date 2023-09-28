@@ -1,4 +1,5 @@
 package ds;
+
 import java.util.*;
 
 public class Graph {
@@ -308,8 +309,7 @@ public class Graph {
         }
         distance.put(src, 0);
 
-        // Create a priority queue to keep track of nodes with minimum
-        // distance
+        // Create a priority queue to keep track of nodes with minimum distance
         PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingInt(distance::get));
         queue.add(src);
 
@@ -349,7 +349,7 @@ public class Graph {
             System.out.print(s + " --> ");
             Thread.sleep(1000);
         }
-    System.out.println(distance.get(dst) + " km");
+        System.out.println(distance.get(dst) + " km");
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -359,8 +359,8 @@ public class Graph {
         while (true) {
             System.out.println("\n0 -> Exit.");
             System.out.println("1 -> Display all stops.");
-            System.out.println("2 -> Display all neighbouring stops alphabetically.");
-            System.out.println("3 -> Display all neighbouring stops with respect to distance.");
+            // System.out.println("2 -> Display all neighbouring stops alphabetically.");
+            System.out.println("3 -> Display all neighbouring stops with distance.");
             System.out.println("4 -> Display shortest distance from source to all stops");
             System.out.println("5 -> Display shortest path from source to destination");
             int choice;
@@ -379,25 +379,26 @@ public class Graph {
                     displayStops(100);
                     break;
                 case 2:
-                    displayStops(50);
-                    while (true) {
-                        int c;
-                        try {
-                            System.out.print("\nEnter stop number whose neighbours you want to display : ");
-                            c = sc.nextInt();
-                            if (c > 0 && c < 34) {
-                                graph[c - 1].sort(Comparator.comparing(Edge::getDst));
-                                displaySorted(graph[c - 1]);
-                                break;
-                            } else {
-                                System.out.println("\nEnter valid stop number.\n");
-                            }
-                        } catch (Exception e) {
-                            System.out.println("\n" + e + "\n");
-                            System.out.println("Enter your choice in numbers only.");
-                            sc.nextLine();
-                        }
-                    }
+                    // displayStops(50);
+                    // while (true) {
+                    // int c;
+                    // try {
+                    // System.out.print("\nEnter stop number whose neighbours you want to display :
+                    // ");
+                    // c = sc.nextInt();
+                    // if (c > 0 && c < 34) {
+                    // graph[c - 1].sort(Comparator.comparing(Edge::getDst));
+                    // displaySorted(graph[c - 1]);
+                    // break;
+                    // } else {
+                    // System.out.println("\nEnter valid stop number.\n");
+                    // }
+                    // } catch (Exception e) {
+                    // System.out.println("\n" + e + "\n");
+                    // System.out.println("Enter your choice in numbers only.");
+                    // sc.nextLine();
+                    // }
+                    // }
                     break;
                 case 3:
                     displayStops(50);
@@ -462,53 +463,6 @@ public class Graph {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // public static void displayAllPaths(ArrayList<Edge> graph[], boolean vis[],
 // String curr, String tar, String path) {

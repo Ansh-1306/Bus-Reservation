@@ -64,7 +64,7 @@ class Bus {
             currentStopIndex++;
         }
 
-        System.out.println("Bus " + name + " has reached the destinatio/0n nbvz r cvbnm,./1.");
+        System.out.println("Bus " + name + " has reached the destinatio");
     }
 }
 
@@ -91,10 +91,6 @@ class MultiBusTrackingSimulation {
 
         Thread thread1 = new Thread(bus1::simulateTravel);
         Thread thread2 = new Thread(bus2::simulateTravel);
-
-        System.out.println(bus1);
-        System.out.println(bus2);
-        
 
         thread1.start();
         thread2.start();

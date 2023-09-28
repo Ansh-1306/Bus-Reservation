@@ -11,8 +11,6 @@ class Register_Login {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/BusMNG", "root", "");
 
-        
-
         while (true) {
             System.out.println("\n0 -> Exit.");
             System.out.println("1 -> New here? Register.");
