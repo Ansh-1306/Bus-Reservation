@@ -1,5 +1,3 @@
-package ds;
-
 import java.util.*;
 
 public class Graph {
@@ -15,16 +13,10 @@ public class Graph {
         String dst;
         int distance;
 
-        // double price;
-        private Edge(String src, String dst, int distance/* , double price */) {
+        private Edge(String src, String dst, int distance) {
             this.src = src;
             this.dst = dst;
             this.distance = distance;
-            // this.price = price;
-        }
-
-        private String getDst() {
-            return dst;
         }
 
         private int getDistance() {
@@ -35,7 +27,7 @@ public class Graph {
 
     private static void displayStops(int delay) throws InterruptedException {
         System.out.println("+-------------------------+");
-        System.out.println("|      BUS STOP LIST      |");
+        System.out.println("|        STOP LIST        |");
         System.out.println("+-------------------------+\n");
         ArrayList<String> stopNames = new ArrayList<>(Arrays.asList(stops));
         int i = 1;
@@ -249,55 +241,6 @@ public class Graph {
         return -1;
     }
 
-    public static class Pair implements Comparable<Pair> {
-        String node;
-        int dist;
-
-        public Pair(String node, int dist) {
-            this.node = node;
-            this.dist = dist;
-        }
-
-        @Override
-        public int compareTo(Pair p2) {
-            return this.dist - p2.dist;
-        }
-    }
-
-    private static void dijkstra(ArrayList<Edge>[] graph, String src) throws InterruptedException {
-        PriorityQueue<Pair> pq = new PriorityQueue<>();
-        int[] dist = new int[numStops];
-        boolean[] vis = new boolean[numStops];
-        for (int i = 0; i < numStops; i++) {
-            if (!stops[i].equals(src)) {
-                dist[i] = Integer.MAX_VALUE;
-            }
-        }
-
-        pq.add(new Pair(src, 0));
-
-        while (!pq.isEmpty()) {
-            Pair curr = pq.remove();
-            if (!vis[find_index(curr.node)]) {
-                vis[find_index(curr.node)] = true;
-
-                for (int i = 0; i < graph[find_index(curr.node)].size(); i++) {
-                    Edge e = graph[find_index(curr.node)].get(i);
-                    String u = e.src;
-                    String v = e.dst;
-                    if (dist[find_index(u)] + e.distance < dist[find_index(v)]) {
-                        dist[find_index(v)] = dist[find_index(u)] + e.distance;
-                        pq.add(new Pair(v, dist[find_index(v)]));
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < numStops; i++) {
-            System.out.printf(" %-20s == %10s km\n", stops[i], dist[i]);
-            Thread.sleep(100);
-        }
-    }
-
     public static void findShortestPath(ArrayList<Edge>[] graph, String src, String dst) throws InterruptedException {
         Map<String, Integer> distance = new HashMap<>();
         Map<String, String> previous = new HashMap<>();
@@ -318,11 +261,11 @@ public class Graph {
             visited.add(currentNode);
 
             int nodeIndex = find_index(currentNode);
-            ArrayList<Edge> neighbors = graph[nodeIndex];
+            ArrayList<Edge> neighbours = graph[nodeIndex];
 
-            for (Edge neighborEdge : neighbors) {
-                String neighborNode = neighborEdge.dst;
-                int edgeWeight = neighborEdge.distance;
+            for (Edge neighbourEdge : neighbours) {
+                String neighborNode = neighbourEdge.dst;
+                int edgeWeight = neighbourEdge.distance;
                 int newDistance = distance.get(currentNode) + edgeWeight;
 
                 if (newDistance < distance.get(neighborNode)) {
@@ -334,22 +277,29 @@ public class Graph {
                 }
             }
         }
+        if (dst == null) {
+            System.out.println();
+            for (String stop : stops) {
+                System.out.printf(" %-20s == %10s km\n", stop, distance.get(stop));
+                Thread.sleep(100);
+            }
+        } else {
+            List<String> shortestPath = new ArrayList<>();
+            String currentNode = dst;
+            while (previous.containsKey(currentNode)) {
+                shortestPath.add(currentNode);
+                currentNode = previous.get(currentNode);
+            }
+            shortestPath.add(src);
+            Collections.reverse(shortestPath);
 
-        List<String> shortestPath = new ArrayList<>();
-        String currentNode = dst;
-        while (previous.containsKey(currentNode)) {
-            shortestPath.add(currentNode);
-            currentNode = previous.get(currentNode);
+            System.out.print("\nShortest Path from " + src + " to " + dst + ": ");
+            for (String s : shortestPath) {
+                System.out.print(s + " --> ");
+                Thread.sleep(1000);
+            }
+            System.out.println(distance.get(dst) + " km");
         }
-        shortestPath.add(src);
-        Collections.reverse(shortestPath);
-
-        System.out.print("\nShortest Path from " + src + " to " + dst + ": ");
-        for (String s : shortestPath) {
-            System.out.print(s + " --> ");
-            Thread.sleep(1000);
-        }
-        System.out.println(distance.get(dst) + " km");
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -359,10 +309,9 @@ public class Graph {
         while (true) {
             System.out.println("\n0 -> Exit.");
             System.out.println("1 -> Display all stops.");
-            // System.out.println("2 -> Display all neighbouring stops alphabetically.");
-            System.out.println("3 -> Display all neighbouring stops with distance.");
-            System.out.println("4 -> Display shortest distance from source to all stops");
-            System.out.println("5 -> Display shortest path from source to destination");
+            System.out.println("2 -> Display all neighbouring stops with distance.");
+            System.out.println("3 -> Display shortest distance from source to all stops");
+            System.out.println("4 -> Display shortest path from source to destination");
             int choice;
             try {
                 choice = sc.nextInt();
@@ -379,28 +328,6 @@ public class Graph {
                     displayStops(100);
                     break;
                 case 2:
-                    // displayStops(50);
-                    // while (true) {
-                    // int c;
-                    // try {
-                    // System.out.print("\nEnter stop number whose neighbours you want to display :
-                    // ");
-                    // c = sc.nextInt();
-                    // if (c > 0 && c < 34) {
-                    // graph[c - 1].sort(Comparator.comparing(Edge::getDst));
-                    // displaySorted(graph[c - 1]);
-                    // break;
-                    // } else {
-                    // System.out.println("\nEnter valid stop number.\n");
-                    // }
-                    // } catch (Exception e) {
-                    // System.out.println("\n" + e + "\n");
-                    // System.out.println("Enter your choice in numbers only.");
-                    // sc.nextLine();
-                    // }
-                    // }
-                    break;
-                case 3:
                     displayStops(50);
                     int c;
                     try {
@@ -419,13 +346,13 @@ public class Graph {
                         sc.nextLine();
                     }
                     break;
-                case 4:
+                case 3:
                     displayStops(50);
                     try {
                         System.out.print("\nEnter the starting point : ");
                         int st = sc.nextInt();
                         if (st > 0 && st < 34) {
-                            dijkstra(graph, stops[st - 1]);
+                            findShortestPath(graph, stops[st - 1],null);
                             break;
                         } else {
                             System.out.println("\nEnter valid stop number.\n");
@@ -437,7 +364,7 @@ public class Graph {
                     }
                     break;
 
-                case 5:
+                case 4:
                     displayStops(50);
                     try {
                         System.out.print("Enter starting point : ");
@@ -447,7 +374,6 @@ public class Graph {
                         int target = sc.nextInt();
 
                         if (start > 0 && start < 34 && target > 0 && target < 34) {
-                            // dijkstra(graph, stops[start - 1], stops[target - 1]);
                             findShortestPath(graph, stops[start - 1], stops[target - 1]);
                         }
                     } catch (Exception e) {
@@ -463,36 +389,3 @@ public class Graph {
         }
     }
 }
-
-// public static void displayAllPaths(ArrayList<Edge> graph[], boolean vis[],
-// String curr, String tar, String path) {
-// if (curr.equals(tar)) {
-// System.out.println(path);
-// return;
-// }
-// for (int i = 0; i < graph[find_index(curr)].size(); i++) {
-// Edge e = graph[find_index(curr)].get(i);
-// if (!vis[find_index(e.dst)]) {
-// vis[find_index(e.dst)] = true;
-// displayAllPaths(graph, vis, e.dst, tar, path + e.dst + " -> ");
-// vis[find_index(e.dst)] = false;
-// }
-// }
-// }
-
-// case 4:
-// try {
-// System.out.print("Enter starting point : ");
-// int start = sc.nextInt();
-// System.out.print("Enter ending point : ");
-// int target = sc.nextInt();
-
-// if (start > 0 && start < 34 && target > 0 && target < 34)
-// displayAllPaths(graph, new boolean[numStops], stops[start - 1], stops[target
-// - 1], "");
-// } catch (Exception e) {
-// System.out.println("Enter your choice in numbers only.");
-// sc.nextLine();
-// }
-
-// break;
