@@ -302,90 +302,115 @@ public class Graph {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    Graph() {
         ArrayList<Edge>[] graph = new ArrayList[numStops];
         initialiseRoutes(graph);
 
-        while (true) {
-            System.out.println("\n0 -> Exit.");
-            System.out.println("1 -> Display all stops.");
-            System.out.println("2 -> Display all neighbouring stops with distance.");
-            System.out.println("3 -> Display shortest distance from source to all stops");
-            System.out.println("4 -> Display shortest path from source to destination");
-            int choice;
-            try {
-                choice = sc.nextInt();
-            } catch (Exception e) {
-                System.out.println("Enter your choice in numbers only.");
-                choice = -1;
-                sc.nextLine();
-            }
-            switch (choice) {
-                case 0:
-                    System.exit(0);
-                    break;
-                case 1:
-                    displayStops(100);
-                    break;
-                case 2:
-                    displayStops(50);
-                    int c;
-                    try {
-                        System.out.print("\nEnter stop number whose neighbours you want to display : ");
-                        c = sc.nextInt();
-                        if (c > 0 && c < 34) {
-                            graph[c - 1].sort(Comparator.comparing(Edge::getDistance));
-                            displaySorted(graph[c - 1]);
-                            break;
-                        } else {
-                            System.out.println("\nEnter valid stop number.\n");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("\n" + e + "\n");
-                        System.out.println("Enter your choice in numbers only.");
-                        sc.nextLine();
-                    }
-                    break;
-                case 3:
-                    displayStops(50);
-                    try {
-                        System.out.print("\nEnter the starting point : ");
-                        int st = sc.nextInt();
-                        if (st > 0 && st < 34) {
-                            findShortestPath(graph, stops[st - 1],null);
-                            break;
-                        } else {
-                            System.out.println("\nEnter valid stop number.\n");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("\n" + e + "\n");
-                        System.out.println("Enter your choice in numbers only.");
-                        sc.nextLine();
-                    }
-                    break;
-
-                case 4:
-                    displayStops(50);
-                    try {
-                        System.out.print("Enter starting point : ");
-                        int start = sc.nextInt();
-                        sc.nextLine();
-                        System.out.print("Enter destination point : ");
-                        int target = sc.nextInt();
-
-                        if (start > 0 && start < 34 && target > 0 && target < 34) {
-                            findShortestPath(graph, stops[start - 1], stops[target - 1]);
-                        }
-                    } catch (Exception e) {
-                        System.out.println("\n" + e + "\n");
-                        System.out.println("Enter your choice in numbers only.");
-                        sc.nextLine();
-                    }
-                    break;
-                default:
-                    System.out.println("Enter valid choice");
-                    break;
-            }
-        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// public static void main(String[] args) throws InterruptedException {
+// ArrayList<Edge>[] graph = new ArrayList[numStops];
+// initialiseRoutes(graph);
+
+// while (true) {
+// System.out.println("\n0 -> Exit.");
+// System.out.println("1 -> Display all stops.");
+// System.out.println("2 -> Display all neighbouring stops with distance.");
+// System.out.println("3 -> Display shortest distance from source to all
+// stops");
+// System.out.println("4 -> Display shortest path from source to destination");
+// int choice;
+// try {
+// choice = sc.nextInt();
+// } catch (Exception e) {
+// System.out.println("Enter your choice in numbers only.");
+// choice = -1;
+// sc.nextLine();
+// }
+// switch (choice) {
+// case 0:
+// System.exit(0);
+// break;
+// case 1:
+// displayStops(100);
+// break;
+// case 2:
+// displayStops(50);
+// int c;
+// try {
+// System.out.print("\nEnter stop number whose neighbours you want to display :
+// ");
+// c = sc.nextInt();
+// if (c > 0 && c < 34) {
+// graph[c - 1].sort(Comparator.comparing(Edge::getDistance));
+// displaySorted(graph[c - 1]);
+// break;
+// } else {
+// System.out.println("\nEnter valid stop number.\n");
+// }
+// } catch (Exception e) {
+// System.out.println("\n" + e + "\n");
+// System.out.println("Enter your choice in numbers only.");
+// sc.nextLine();
+// }
+// break;
+// case 3:
+// displayStops(50);
+// try {
+// System.out.print("\nEnter the starting point : ");
+// int st = sc.nextInt();
+// if (st > 0 && st < 34) {
+// findShortestPath(graph, stops[st - 1],null);
+// break;
+// } else {
+// System.out.println("\nEnter valid stop number.\n");
+// }
+// } catch (Exception e) {
+// System.out.println("\n" + e + "\n");
+// System.out.println("Enter your choice in numbers only.");
+// sc.nextLine();
+// }
+// break;
+
+// case 4:
+// displayStops(50);
+// try {
+// System.out.print("Enter starting point : ");
+// int start = sc.nextInt();
+// sc.nextLine();
+// System.out.print("Enter destination point : ");
+// int target = sc.nextInt();
+
+// if (start > 0 && start < 34 && target > 0 && target < 34) {
+// findShortestPath(graph, stops[start - 1], stops[target - 1]);
+// }
+// } catch (Exception e) {
+// System.out.println("\n" + e + "\n");
+// System.out.println("Enter your choice in numbers only.");
+// sc.nextLine();
+// }
+// break;
+// default:
+// System.out.println("Enter valid choice");
+// break;
+// }
+// }
+// }

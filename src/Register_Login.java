@@ -1,3 +1,4 @@
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -94,6 +95,8 @@ class Register_Login {
                         if (c == 1) {
                             System.out.println("\nYou have been successfully registered.");
                             System.out.println("Please login using username and password.");
+                            File file = new File(f_name+"_"+phone.substring(7));
+                            file.mkdir();
                         } else {
                             System.out.println("Registration Failed !!! Try Again.");
                         }
