@@ -4,19 +4,18 @@ public class Graph {
     public static final int numStops = 33;
     static Scanner sc = new Scanner(System.in);
     static BusStop[] busStops = new BusStop[numStops];
+    static ArrayList<Edge>[] graph;
     static String[] stopNames = { "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar",
             "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar",
             "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan",
             "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad" };
 
     Graph() {
-        ArrayList<Edge>[] graph = new ArrayList[numStops];
+        graph = new ArrayList[numStops];
         initialiseRoutes(graph);
         for (int i = 0; i < numStops; i++) {
             busStops[i] = new BusStop(stopNames[i]);
         }
-        System.out.println(busStops);
-
     }
 
     static class Edge {
@@ -39,6 +38,75 @@ public class Graph {
             return distance;
         }
 
+    }
+
+    public static void findShortestPath(ArrayList<Edge>[] graph, BusStop source, BusStop destination) {
+        BusStop src = busStops[find_index(source)];
+        BusStop dst = busStops[find_index(destination)];
+        Map<BusStop, Integer> distance = new HashMap<>();
+        Map<BusStop, BusStop> previous = new HashMap<>();
+        Set<BusStop> visited = new HashSet<>();
+
+        // Initialize the distance map with infinity for all nodes except the start node
+        for (BusStop node : busStops) {
+            distance.put(node, Integer.MAX_VALUE);
+        }
+        distance.put(src, 0);
+
+        // Create a priority queue to keep track of nodes with minimum distance
+        PriorityQueue<BusStop> queue = new PriorityQueue<>(Comparator.comparingInt(distance::get));
+        queue.add(src);
+
+        while (!queue.isEmpty()) {
+            BusStop currentNode = queue.poll();
+            visited.add(currentNode);
+
+            int nodeIndex = find_index(currentNode);
+            ArrayList<Edge> neighbours = graph[nodeIndex];
+
+            for (Edge neighbourEdge : neighbours) {
+                BusStop neighborNode = neighbourEdge.dst;
+                int edgeWeight = neighbourEdge.distance;
+                int newDistance = distance.get(currentNode) + edgeWeight;
+
+                if (newDistance < distance.get(neighborNode)) {
+                    distance.put(neighborNode, newDistance);
+                    previous.put(neighborNode, currentNode);
+                    if (!visited.contains(neighborNode)) {
+                        queue.add(neighborNode);
+                    }
+                }
+            }
+        }
+        if (dst == null) {
+            System.out.println();
+            for (BusStop stop : busStops) {
+                System.out.printf(" %-20s == %10s km\n", stop, distance.get(stop));
+            }
+        } else {
+            List<BusStop> shortestPath = new ArrayList<>();
+            BusStop currentNode = dst;
+            while (previous.containsKey(currentNode)) {
+                shortestPath.add(currentNode);
+                currentNode = previous.get(currentNode);
+            }
+            shortestPath.add(src);
+            Collections.reverse(shortestPath);
+
+            System.out.print("\nShortest Path from " + src + " to " + dst + ": ");
+            for (BusStop s : shortestPath) {
+                System.out.print(s + " --> ");
+            }
+            System.out.println(distance.get(dst) + " km");
+        }
+    }
+    private static int find_index(BusStop stop) {
+        for (int i = 0; i < numStops; i++) {
+            if (busStops[i].name.equals(stop.name)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static void initialiseRoutes(ArrayList<Edge>[] graph) {
@@ -246,15 +314,6 @@ public class Graph {
 // Thread.sleep(100);
 // System.out.printf("%-20s == %10s km\n", e.dst, e.distance);
 // }
-// }
-
-// private static int find_index(String stop) {
-// for (int i = 0; i < numStops; i++) {
-// if (busStops[i].equals(stop)) {
-// return i;
-// }
-// }
-// return -1;
 // }
 
 // public static void findShortestPath(ArrayList<Edge>[] graph, String src,

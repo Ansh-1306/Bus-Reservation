@@ -22,7 +22,7 @@ public class Booking {
 
     void initialise() {
         Graph network = new Graph();
-        
+        Graph.findShortestPath(network.graph, new BusStop("Dahod"), new BusStop("Dang"));
     }
 
     synchronized void optionMenu() {
