@@ -1,92 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="27c6989d-aaf6-4d8e-8c95-7823c6d5cbd7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/postgresql-42.6.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Graph$Edge.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Graph$Edge.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Graph.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Graph.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Register_Login.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Register_Login.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/mysql-connector-j-8.1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/mysql-connector-j-8.1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Java Individual/Bus.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java Individual/Bus.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Java Individual/Graph$Edge.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java Individual/Graph$Edge.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Java Individual/Graph$Pair.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Java Individual/Graph.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java Individual/Graph.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Java Individual/MultiBusTrackingSimulation.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java Individual/MultiBusTrackingSimulation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Java Individual/Register_Login.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java Individual/Register_Login.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Register_Login.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Register_Login.java" afterDir="false" />
-    </list>
+    <list default="true" id="27c6989d-aaf6-4d8e-8c95-7823c6d5cbd7" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2VA1s8sufeyBXfsvdH1bQQCfNXU" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/patel/OneDrive/Desktop/Java Individual/lib",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
-  },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
-    ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "PostgreSQL"
-    ]
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\patel\OneDrive\Desktop\Java Individual\lib" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\patel\OneDrive\Desktop\Java Individual\src" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration name="Register_Login" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Register_Login" />
-      <module name="Java Individual" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.Register_Login" />
-      </list>
-    </recent_temporary>
-  </component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -97,7 +34,6 @@
       <updated>1694264277462</updated>
       <workItem from="1694264280123" duration="40000" />
       <workItem from="1694550988507" duration="7000" />
-      <workItem from="1696080259107" duration="1398000" />
     </task>
     <servers />
   </component>
