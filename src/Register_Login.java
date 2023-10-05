@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Scanner;
 
 class Register_Login {
@@ -195,7 +196,7 @@ class Register_Login {
         }
     }
 
-    public static void admin_login() {
+    public static void admin_login() throws SQLException, ParseException {
         sc.nextLine();
         System.out.print("                  Enter Admin Username : ");
         String user = sc.nextLine();

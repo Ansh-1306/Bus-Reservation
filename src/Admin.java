@@ -1,8 +1,8 @@
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +17,7 @@ public class Admin {
     Connection con;
     Graph network;
 
-    Admin(Connection con, Scanner sc) throws SQLException {
+    Admin(Connection con, Scanner sc) throws SQLException, ParseException {
         this.sc = sc;
         this.con = con;
         network = new Graph();
@@ -72,7 +72,8 @@ public class Admin {
         ArrayList<Integer> distance = new ArrayList<>();
         ArrayList<String> time = new ArrayList<>();
 
-        PreparedStatement ps = con.prepareStatement("select * from buses where bus_id = id");
+        PreparedStatement ps = con.prepareStatement("select * from buses where bus_id = ?;");
+        ps.setString(1, id);
         ResultSet rs = ps.executeQuery();
         if (rs.next()) {
             System.out.println("                  Bus with " + id + " already exists.");
@@ -93,7 +94,7 @@ public class Admin {
             String arrival = sc.nextLine();
             time.add(arrival);
         }
-        int r=0;
+        int r = 0;
         if (hasEmptyValue(busStops) && isAscendingOrder(distance) && isValidAndAscendingOrder(time)) {
             PreparedStatement pst = con.prepareStatement("insert into buses values(?,?,?,?,?);");
             for (int i = 0; i < busStops.size(); i++) {
@@ -107,23 +108,51 @@ public class Admin {
                 pst.setTime(5, x);
                 r = pst.executeUpdate();
             }
-            if(r > 0){
+            if (r > 0) {
                 System.out.println("                  New Bus Route Added Successfully.");
-            }else{
+            } else {
                 System.out.println("                  There seems to be a problem adding the bus data.");
             }
-        }else{
-            System.out.println("                  The data you added seems to violate the conditions for addinf new routes.");
+        } else {
+            System.out.println(
+                    "                  The data you added seems to violate the conditions for addinf new routes.");
         }
 
     }
 
-    public void removeBus() {
+    public void removeBus() throws SQLException {
+        System.out.print("                  Enter Bus ID : ");
+        sc.nextLine();
+        String id = sc.nextLine();
+        PreparedStatement ps = con.prepareStatement("delete from buses where Bus_id = ?;");
+        ps.setString(1, id);
+        int r = ps.executeUpdate();
+        if (r > 0) {
+            System.out.println("                  Bus deleted Successfully.");
+        } else {
+            System.out.println("                  No Buses with given Bus ID found.");
+        }
 
     }
 
-    public void viewBuses() {
-
+    public void viewBuses() throws SQLException {
+        Statement st = con.createStatement();
+        ArrayList<String> ids = new ArrayList<>();
+        ResultSet rs = st.executeQuery("select Bus_id from buses group by Bus_id;");
+        while(rs.next()){
+            ids.add(rs.getString(1));
+        }
+        for(int i=0;i<ids.size();i++){
+            PreparedStatement ps = con.prepareStatement("select * from buses where Bus_id = ?;");
+            ps.setString(1, ids.get(i));
+            ResultSet rs1 = ps.executeQuery();
+            System.out.println("                  Bus ID : "+ids.get(i));
+            System.out.print("                Stops : [ ");
+            while(rs1.next()){
+                System.out.print(rs1.getString(3)+", ");
+            }
+            System.out.println("]\n\n");
+        }
     }
 
     public static boolean isValidAndAscendingOrder(List<String> list) {
