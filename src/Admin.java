@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,13 +16,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Admin {
-    Scanner sc;
-    Connection con;
+    static Scanner sc;
+    static Connection con;
     Graph network;
 
     Admin(Connection con, Scanner sc) throws SQLException, ParseException, IOException {
         this.sc = sc;
-        this.con = con;
+        Admin.con = con;
         network = new Graph();
 
         boolean flag = true;
@@ -66,7 +67,7 @@ public class Admin {
         }
     }
 
-    private void addBus() throws SQLException, ParseException, IOException {
+    private static void addBus() throws SQLException, ParseException, IOException {
         System.out.print("                  Enter Bus ID : ");
         sc.nextLine();
         String id = sc.nextLine();
@@ -125,6 +126,7 @@ public class Admin {
                 System.out.println("                  New Bus Route Added Successfully.");
                 File file = new File(id + ".txt");
                 file.createNewFile();
+                seatInitialise(file);
             } else {
                 System.out.println("                  There seems to be a problem adding the bus data.");
             }
@@ -132,10 +134,32 @@ public class Admin {
             System.out.println(
                     "                  The data you added seems to violate the conditions for addinf new routes.");
         }
-
     }
 
-    private void removeBus() throws SQLException {
+    private static void seatInitialise(File file) throws IOException{
+        FileWriter fw = new FileWriter(file);
+        fw.write(" _______________________\n");
+        fw.write("|                       |\n");
+        fw.write("| [01] [02]   [03] [04] |\n");
+        fw.write("| [05] [06]   [07] [08] |\n");
+        fw.write("| [09] [10]   [11] [12] |\n");
+        fw.write("| [13] [14]   [15] [16] |\n");
+        fw.write("| [17] [18]   [19] [20] |\n");
+        fw.write("| [21] [22]   [23] [24] |\n");
+        fw.write("| [25] [26]   [27] [28] |\n");
+        fw.write("| [29] [30]   [31] [32] |\n");
+        fw.write("| [33] [34]   [35] [36] |\n");
+        fw.write("| [37] [38]   [39] [40] |\n");
+        fw.write("| [41] [42]   [43] [44] |\n");
+        fw.write("| [45] [46]   [47] [48] |\n");
+        fw.write("| [49] [50]   [51] [52] |\n");
+        fw.write("| [53] [54]   [55] [56] |\n");
+        fw.write("| [57] [58]   [59] [60] |\n");
+        fw.write("|_______________________|\n");
+        fw.close();
+    }
+
+    private static void removeBus() throws SQLException {
         System.out.print("                  Enter Bus ID : ");
         sc.nextLine();
         String id = sc.nextLine();
@@ -157,7 +181,7 @@ public class Admin {
         }
     }
 
-    public void viewBuses() throws SQLException {
+    public static ArrayList<String> viewBuses() throws SQLException {
         Statement st = con.createStatement();
         ArrayList<String> ids = new ArrayList<>();
         ResultSet rs = st.executeQuery("select Bus_id from buses group by Bus_id;");
@@ -175,9 +199,10 @@ public class Admin {
             }
             System.out.println("\b\b ]\n\n");
         }
+        return ids;
     }
 
-    public static boolean isValidAndAscendingOrder(List<String> list) {
+    private static boolean isValidAndAscendingOrder(List<String> list) {
         // Check if the list is not empty
         if (list.isEmpty()) {
             return false;
@@ -209,7 +234,7 @@ public class Admin {
         return true; // All times are valid and in ascending order
     }
 
-    public static boolean hasEmptyValue(List<String> list) {
+    private static boolean hasEmptyValue(List<String> list) {
         for (String str : list) {
             if (str == null || str.trim().isEmpty()) {
                 return false; // Found an empty or null string
@@ -218,7 +243,7 @@ public class Admin {
         return true; // No empty or null string found
     }
 
-    public static boolean isAscendingOrder(List<Integer> list) {
+    private static boolean isAscendingOrder(List<Integer> list) {
         // Check if the list is not empty and the first element is 0
         if (list.isEmpty() || list.get(0) != 0) {
             return false;

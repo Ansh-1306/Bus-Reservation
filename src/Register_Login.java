@@ -18,7 +18,6 @@ class Register_Login {
     public static void main(String[] args) throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/BusMNG", "root", "");
-
         while (true) {
             System.out.println("                             _________________________________________");
             System.out.println("                            |                                         |");
