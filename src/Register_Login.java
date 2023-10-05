@@ -173,7 +173,7 @@ class Register_Login {
                     String pass = sc.nextLine();
                     if (pswd.equals(pass)) {
                         System.out.println("\n                  \u001B[32;3mLogged in successfully.\u001B[0m\n");
-                        Booking b = new Booking(phone, f_name, l_name, pswd, gender, age);
+                        Booking b = new Booking(phone, f_name, l_name, pswd, gender, age, con,sc);
                         return;
                     } else {
                         System.out.println("\n                  \u001B[31;1;3mIncorrect password.\\u001B[31;1;3m\n");
@@ -203,7 +203,7 @@ class Register_Login {
         String pswd = sc.nextLine();
         if (user.equals("admin") && pswd.equals("admin@123")) {
             System.out.println();
-            Booking.admin();
+            new Admin(con,sc);
         } else {
             System.out.println("\n                  \u001B[31;1;3mIncorrect Username or Password.");
             System.out.println("                  Please Try Again.\u001B[0m\n");

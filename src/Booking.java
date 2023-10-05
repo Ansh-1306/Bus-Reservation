@@ -1,14 +1,14 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+
 public class Booking {
-    static Scanner sc = new Scanner(System.in);
     String phone;
     String f_name;
     String l_name;
@@ -18,14 +18,18 @@ public class Booking {
     ArrayList<String> tickets;
     File dir;
     static Graph network;
+    Connection con;
+    Scanner sc;
 
-    public Booking(String phone, String f_name, String l_name, String pswd, String gender, int age) throws Exception {
+    public Booking(String phone, String f_name, String l_name, String pswd, String gender, int age,Connection con,Scanner sc) throws Exception {
         this.phone = phone;
         this.f_name = f_name;
         this.l_name = l_name;
         this.pswd = pswd;
         this.gender = gender;
         this.age = age;
+        this.con=con;
+        this.sc=sc;
         dir = new File("User_Data", f_name + "_" + phone.substring(7));
         tickets = new ArrayList<>(Arrays.asList(dir.list()));
         network = new Graph();
@@ -58,7 +62,7 @@ public class Booking {
                     System.out.println("                  Logged Out !!");
                     break;
                 case 1:
-
+                    bookTicket();
                     break;
                 case 2:
                     cancelTicket();
@@ -69,15 +73,16 @@ public class Booking {
                 case 4:
                     bookBus();
                     break;
-                case 5:
-
-                    break;
                 default:
                     System.out.println(
                             "\n                  \u001B[31;1;3mEnter number corresponding to below option.\u001B[0m\n");
                     break;
             }
         }
+    }
+
+    private void bookTicket(){
+
     }
 
     private void bookBus() throws InterruptedException {
@@ -146,7 +151,7 @@ public class Booking {
             System.out.println("                  From        : "+Graph.stops[start-1]);
             System.out.println("                  To          : "+Graph.stops[end-1]);
             System.out.println("                  Distance    : "+distance);
-            System.out.println("                  Total Price :"+total_with_gst);
+            System.out.println("                  Total Price : "+total_with_gst);
             System.out.print("                  Confirm Booking? (Yes/No):");
             String ch= sc.nextLine();
             if(ch.equalsIgnoreCase("yes")){
@@ -203,49 +208,5 @@ public class Booking {
             System.out.println();
         }
 
-    }
-
-    public static void admin() {
-        network = new Graph();
-        boolean flag = true;
-        while (flag) {
-            System.out.println();
-            System.out.println("                                 ________________________________");
-            System.out.println("                                |                                |");
-            System.out.println("                                |  0 -> Go Back.                 |");
-            System.out.println("                                |  1 -> Add Bus.                 |");
-            System.out.println("                                |  2 -> Remove Bus.              |");
-            System.out.println("                                |  3 -> View All Buses.          |");
-            System.out.println("                                |________________________________|");
-            int choice = -1;
-            System.out.println();
-            System.out.print("                  Your Choice : ");
-            try {
-                choice = sc.nextInt();
-            } catch (Exception e) {
-                choice = -1;
-                sc.nextLine();
-            }
-            switch (choice) {
-                case 0:
-                    System.out.println();
-                    System.out.println("                  Logged Out From Admin !!!");
-                    flag = false;
-                    break;
-                case 1:
-
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-                default:
-                    System.out.println(
-                            "\n                  \u001B[31;1;3mEnter number corresponding to below option.\u001B[0m\n");
-                    break;
-            }
-        }
     }
 }
