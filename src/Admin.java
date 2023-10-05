@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +19,7 @@ public class Admin {
     Connection con;
     Graph network;
 
-    Admin(Connection con, Scanner sc) throws SQLException, ParseException {
+    Admin(Connection con, Scanner sc) throws SQLException, ParseException, IOException {
         this.sc = sc;
         this.con = con;
         network = new Graph();
@@ -64,7 +66,7 @@ public class Admin {
         }
     }
 
-    public void addBus() throws SQLException, ParseException {
+    private void addBus() throws SQLException, ParseException, IOException {
         System.out.print("                  Enter Bus ID : ");
         sc.nextLine();
         String id = sc.nextLine();
@@ -79,19 +81,30 @@ public class Admin {
             System.out.println("                  Bus with " + id + " already exists.");
             return;
         }
-        System.out.print("                Enter Number of Stops in the Route : ");
-        int num = sc.nextInt();
+        System.out.print("                  Enter Number of Stops in the Route : ");
+        int num;
+        try {
+            num = sc.nextInt();
+        } catch (Exception e) {
+            return;
+        }
+        System.out.println();
         sc.nextLine();
         for (int i = 1; i <= num; i++) {
             System.out.print("                  Enter Stop " + i + " : ");
             String name = sc.nextLine();
             busStops.add(name);
             System.out.print("                  Enter Distance from starting stop : ");
-            int dist = sc.nextInt();
-            distance.add(dist);
-            sc.nextLine();
+            try {
+                int dist = sc.nextInt();
+                sc.nextLine();
+                distance.add(dist);
+            } catch (Exception e) {
+                return;
+            }
             System.out.print("                  Enter Arrival Time (HH:MM:SS) : ");
             String arrival = sc.nextLine();
+            System.out.println();
             time.add(arrival);
         }
         int r = 0;
@@ -110,6 +123,8 @@ public class Admin {
             }
             if (r > 0) {
                 System.out.println("                  New Bus Route Added Successfully.");
+                File file = new File(id + ".txt");
+                file.createNewFile();
             } else {
                 System.out.println("                  There seems to be a problem adding the bus data.");
             }
@@ -120,38 +135,45 @@ public class Admin {
 
     }
 
-    public void removeBus() throws SQLException {
+    private void removeBus() throws SQLException {
         System.out.print("                  Enter Bus ID : ");
         sc.nextLine();
         String id = sc.nextLine();
-        PreparedStatement ps = con.prepareStatement("delete from buses where Bus_id = ?;");
-        ps.setString(1, id);
-        int r = ps.executeUpdate();
-        if (r > 0) {
-            System.out.println("                  Bus deleted Successfully.");
+        System.out.print("                  Confirm Deletion? (Yes/No):");
+        String c = sc.nextLine();
+        if (c.equalsIgnoreCase("no")) {
+            System.out.println("                  Deletion Cancelled!");
         } else {
-            System.out.println("                  No Buses with given Bus ID found.");
+            PreparedStatement ps = con.prepareStatement("delete from buses where Bus_id = ?;");
+            ps.setString(1, id);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                System.out.println("                  Bus deleted Successfully.");
+                File file = new File(id + ".txt");
+                file.delete();
+            } else {
+                System.out.println("                  No Buses with given Bus ID found.");
+            }
         }
-
     }
 
     public void viewBuses() throws SQLException {
         Statement st = con.createStatement();
         ArrayList<String> ids = new ArrayList<>();
         ResultSet rs = st.executeQuery("select Bus_id from buses group by Bus_id;");
-        while(rs.next()){
+        while (rs.next()) {
             ids.add(rs.getString(1));
         }
-        for(int i=0;i<ids.size();i++){
+        for (int i = 0; i < ids.size(); i++) {
             PreparedStatement ps = con.prepareStatement("select * from buses where Bus_id = ?;");
             ps.setString(1, ids.get(i));
             ResultSet rs1 = ps.executeQuery();
-            System.out.println("                  Bus ID : "+ids.get(i));
-            System.out.print("                Stops : [ ");
-            while(rs1.next()){
-                System.out.print(rs1.getString(3)+", ");
+            System.out.println("                  Bus ID : " + ids.get(i));
+            System.out.print("                  Stops : [ ");
+            while (rs1.next()) {
+                System.out.print(rs1.getString(3) + ", ");
             }
-            System.out.println("]\n\n");
+            System.out.println("\b\b ]\n\n");
         }
     }
 

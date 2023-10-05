@@ -205,11 +205,16 @@ public class Graph {
 
     public static void displayStops() throws InterruptedException {
         ArrayList<String> stopNames = new ArrayList<>(Arrays.asList(stops));
-        System.out.println("            +-----------------------------------------------------------------------------+");
-        System.out.println("            |                                                                             |");
-        System.out.println("            |                                 \u001B[1mSTOPS LIST\u001B[0m                                  |");
-        System.out.println("            |                                                                             |");
-        System.out.println("            +-----------------------------------------------------------------------------+");
+        System.out
+                .println("            +-----------------------------------------------------------------------------+");
+        System.out
+                .println("            |                                                                             |");
+        System.out.println(
+                "            |                                 \u001B[1mSTOPS LIST\u001B[0m                                  |");
+        System.out
+                .println("            |                                                                             |");
+        System.out
+                .println("            +-----------------------------------------------------------------------------+");
         for (int i = 0; i < stopNames.size(); i += 3) {
             Thread.sleep(100);
             String stop1 = String.format("%-30s", "\u001B[33m[" + (i + 1) + "] " + stopNames.get(i));
@@ -224,7 +229,7 @@ public class Graph {
                 .println("            |                                                                             |");
         System.out
                 .println("            +-----------------------------------------------------------------------------+");
-                System.out.println();
+        System.out.println();
 
     }
 
@@ -280,12 +285,12 @@ public class Graph {
         shortestPath.add(src);
         Collections.reverse(shortestPath);
 
-        System.out.print("\n                  Shortest Path from " + src + " to " + dst + ": ");
-        for (int i = 0; i < shortestPath.size()-1; i++) {
-            System.out.print(shortestPath.get(i)+" --> ");
+        System.out.print("\n                  Path from " + src + " to " + dst + ": ");
+        for (int i = 0; i < shortestPath.size() - 1; i++) {
+            System.out.print(shortestPath.get(i) + " --> ");
         }
-        System.out.println(shortestPath.get(shortestPath.size()-1));
-        System.out.println("                  Distance : "+distance.get(dst) + " km");
+        System.out.println(shortestPath.get(shortestPath.size() - 1));
+        System.out.println("                  Distance : " + distance.get(dst) + " km");
         return distance.get(dst);
         // }
     }
@@ -295,4 +300,3 @@ public class Graph {
         initialiseRoutes();
     }
 }
-
