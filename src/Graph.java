@@ -1,8 +1,8 @@
- import java.util.*;
+import java.util.*;
 
 public class Graph {
-    public static final int numStops = 33;
-    ArrayList<Edge>[] graph ;
+    private static final int NUM_STOPS = 33;
+    private static ArrayList<Edge>[] graph;
     static Scanner sc = new Scanner(System.in);
     static String[] stops = { "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar",
             "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar",
@@ -19,31 +19,9 @@ public class Graph {
             this.dst = dst;
             this.distance = distance;
         }
-
-        private int getDistance() {
-            return distance;
-        }
-
     }
 
-    private static void displayStops(int delay) throws InterruptedException {
-        System.out.println("+-------------------------+");
-        System.out.println("|        STOP LIST        |");
-        System.out.println("+-------------------------+\n");
-        ArrayList<String> stopNames = new ArrayList<>(Arrays.asList(stops));
-        int i = 1;
-        for (String st : stopNames) {
-            Thread.sleep(delay);
-            if (i < 10) {
-                System.out.println("0" + i++ + " -> " + st);
-            } else {
-                System.out.println(i++ + " -> " + st);
-            }
-        }
-
-    }
-
-    private static void initialiseRoutes(ArrayList<Edge>[] graph) {
+    private static void initialiseRoutes() {
         for (int i = 0; i < graph.length; i++) {
             graph[i] = new ArrayList<>();
         }
@@ -225,35 +203,50 @@ public class Graph {
 
     }
 
-    private static void displaySorted(ArrayList<Edge> graph) throws InterruptedException {
-        System.out.println();
-        for (Edge e : graph) {
+    public static void displayStops() throws InterruptedException {
+        ArrayList<String> stopNames = new ArrayList<>(Arrays.asList(stops));
+        System.out.println("            +-----------------------------------------------------------------------------+");
+        System.out.println("            |                                                                             |");
+        System.out.println("            |                                 \u001B[1mSTOPS LIST\u001B[0m                                  |");
+        System.out.println("            |                                                                             |");
+        System.out.println("            +-----------------------------------------------------------------------------+");
+        for (int i = 0; i < stopNames.size(); i += 3) {
             Thread.sleep(100);
-            System.out.printf("%-20s == %10s km\n", e.dst, e.distance);
+            String stop1 = String.format("%-30s", "\u001B[33m[" + (i + 1) + "] " + stopNames.get(i));
+            String stop2 = String.format("%-30s", "\u001B[35m[" + (i + 2) + "] " + stopNames.get(i + 1));
+            String stop3 = String.format("%-30s", "\u001B[36m[" + (i + 3) + "] " + stopNames.get(i + 2));
+
+            System.out.println(
+                    "            |                                                                             |");
+            System.out.println("            | " + stop1 + stop2 + stop3 + "\u001B[0m |");
         }
+        System.out
+                .println("            |                                                                             |");
+        System.out
+                .println("            +-----------------------------------------------------------------------------+");
+                System.out.println();
+
     }
 
     private static int find_index(String stop) {
-        for (int i = 0; i < numStops; i++) {
-            if (stops[i].equals(stop)) {
+        for (int i = 0; i < NUM_STOPS; i++) {
+            if (stops[i].equalsIgnoreCase(stop)) {
                 return i;
             }
         }
         return -1;
     }
 
-    public static void findShortestPath(ArrayList<Edge>[] graph, String src, String dst) throws InterruptedException {
+    public static int findShortestPath(String src, String dst) {
         Map<String, Integer> distance = new HashMap<>();
         Map<String, String> previous = new HashMap<>();
         Set<String> visited = new HashSet<>();
 
-        // Initialize the distance map with infinity for all nodes except the start node
         for (String node : stops) {
             distance.put(node, Integer.MAX_VALUE);
         }
         distance.put(src, 0);
 
-        // Create a priority queue to keep track of nodes with minimum distance
         PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingInt(distance::get));
         queue.add(src);
 
@@ -278,223 +271,28 @@ public class Graph {
                 }
             }
         }
-        if (dst == null) {
-            System.out.println();
-            for (String stop : stops) {
-                System.out.printf(" %-20s == %10s km\n", stop, distance.get(stop));
-                Thread.sleep(100);
-            }
-        } else {
-            List<String> shortestPath = new ArrayList<>();
-            String currentNode = dst;
-            while (previous.containsKey(currentNode)) {
-                shortestPath.add(currentNode);
-                currentNode = previous.get(currentNode);
-            }
-            shortestPath.add(src);
-            Collections.reverse(shortestPath);
-
-            System.out.print("\nShortest Path from " + src + " to " + dst + ": ");
-            for (String s : shortestPath) {
-                System.out.print(s + " --> ");
-                Thread.sleep(1000);
-            }
-            System.out.println(distance.get(dst) + " km");
+        List<String> shortestPath = new ArrayList<>();
+        String currentNode = dst;
+        while (previous.containsKey(currentNode)) {
+            shortestPath.add(currentNode);
+            currentNode = previous.get(currentNode);
         }
+        shortestPath.add(src);
+        Collections.reverse(shortestPath);
+
+        System.out.print("\n                  Shortest Path from " + src + " to " + dst + ": ");
+        for (int i = 0; i < shortestPath.size()-1; i++) {
+            System.out.print(shortestPath.get(i)+" --> ");
+        }
+        System.out.println(shortestPath.get(shortestPath.size()-1));
+        System.out.println("                  Distance : "+distance.get(dst) + " km");
+        return distance.get(dst);
+        // }
     }
 
-    Graph() {
-        graph= new ArrayList[numStops];
-        initialiseRoutes(graph);
-        
+    public Graph() {
+        graph = new ArrayList[NUM_STOPS];
+        initialiseRoutes();
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// public static void main(String[] args) throws InterruptedException {
-
-//     while (true) {
-    //         System.out.println("\n0 -> Exit.");
-    //         System.out.println("1 -> Display all stops.");
-    //         System.out.println("2 -> Display all neighbouring stops with distance.");
-    //         System.out.println("3 -> Display shortest distance from source to all stops");
-//         System.out.println("4 -> Display shortest path from source to destination");
-//         int choice;
-//         try {
-//             choice = sc.nextInt();
-//         } catch (Exception e) {
-//             System.out.println("Enter your choice in numbers only.");
-//             choice = -1;
-//             sc.nextLine();
-//         }
-//         switch (choice) {
-//             case 0:
-//                 System.exit(0);
-//                 break;
-//             case 1:
-//                 displayStops(100);
-//                 break;
-//             case 2:
-//                 displayStops(50);
-//                 int c;
-//                 try {
-//                     System.out.print("\nEnter stop number whose neighbours you want to display : ");
-//                     c = sc.nextInt();
-//                     if (c > 0 && c < 34) {
-//                         graph[c - 1].sort(Comparator.comparing(Edge::getDistance));
-//                         displaySorted(graph[c - 1]);
-//                         break;
-//                     } else {
-//                         System.out.println("\nEnter valid stop number.\n");
-//                     }
-//                 } catch (Exception e) {
-//                     System.out.println("\n" + e + "\n");
-//                     System.out.println("Enter your choice in numbers only.");
-//                     sc.nextLine();
-//                 }
-//                 break;
-//             case 3:
-//                 displayStops(50);
-//                 try {
-//                     System.out.print("\nEnter the starting point : ");
-//                     int st = sc.nextInt();
-//                     if (st > 0 && st < 34) {
-//                         findShortestPath(graph, stops[st - 1],null);
-//                         break;
-//                     } else {
-//                         System.out.println("\nEnter valid stop number.\n");
-//                     }
-//                 } catch (Exception e) {
-//                     System.out.println("\n" + e + "\n");
-//                     System.out.println("Enter your choice in numbers only.");
-//                     sc.nextLine();
-//                 }
-//                 break;
-
-//             case 4:
-//                 displayStops(50);
-//                 try {
-//                     System.out.print("Enter starting point : ");
-//                     int start = sc.nextInt();
-//                     sc.nextLine();
-//                     System.out.print("Enter destination point : ");
-//                     int target = sc.nextInt();
-
-//                     if (start > 0 && start < 34 && target > 0 && target < 34) {
-//                         findShortestPath(graph, stops[start - 1], stops[target - 1]);
-//                     }
-//                 } catch (Exception e) {
-//                     System.out.println("\n" + e + "\n");
-//                     System.out.println("Enter your choice in numbers only.");
-//                     sc.nextLine();
-//                 }
-//                 break;
-//             default:
-//                 System.out.println("Enter valid choice");
-//                 break;
-//         }
-//     }
-// }
-// public static void main(String[] args) throws InterruptedException {
-// ArrayList<Edge>[] graph = new ArrayList[numStops];
-// initialiseRoutes(graph);
-
-// while (true) {
-// System.out.println("\n0 -> Exit.");
-// System.out.println("1 -> Display all stops.");
-// System.out.println("2 -> Display all neighbouring stops with distance.");
-// System.out.println("3 -> Display shortest distance from source to all
-// stops");
-// System.out.println("4 -> Display shortest path from source to destination");
-// int choice;
-// try {
-// choice = sc.nextInt();
-// } catch (Exception e) {
-// System.out.println("Enter your choice in numbers only.");
-// choice = -1;
-// sc.nextLine();
-// }
-// switch (choice) {
-// case 0:
-// System.exit(0);
-// break;
-// case 1:
-// displayStops(100);
-// break;
-// case 2:
-// displayStops(50);
-// int c;
-// try {
-// System.out.print("\nEnter stop number whose neighbours you want to display :
-// ");
-// c = sc.nextInt();
-// if (c > 0 && c < 34) {
-// graph[c - 1].sort(Comparator.comparing(Edge::getDistance));
-// displaySorted(graph[c - 1]);
-// break;
-// } else {
-// System.out.println("\nEnter valid stop number.\n");
-// }
-// } catch (Exception e) {
-// System.out.println("\n" + e + "\n");
-// System.out.println("Enter your choice in numbers only.");
-// sc.nextLine();
-// }
-// break;
-// case 3:
-// displayStops(50);
-// try {
-// System.out.print("\nEnter the starting point : ");
-// int st = sc.nextInt();
-// if (st > 0 && st < 34) {
-// findShortestPath(graph, stops[st - 1],null);
-// break;
-// } else {
-// System.out.println("\nEnter valid stop number.\n");
-// }
-// } catch (Exception e) {
-// System.out.println("\n" + e + "\n");
-// System.out.println("Enter your choice in numbers only.");
-// sc.nextLine();
-// }
-// break;
-
-// case 4:
-// displayStops(50);
-// try {
-// System.out.print("Enter starting point : ");
-// int start = sc.nextInt();
-// sc.nextLine();
-// System.out.print("Enter destination point : ");
-// int target = sc.nextInt();
-
-// if (start > 0 && start < 34 && target > 0 && target < 34) {
-// findShortestPath(graph, stops[start - 1], stops[target - 1]);
-// }
-// } catch (Exception e) {
-// System.out.println("\n" + e + "\n");
-// System.out.println("Enter your choice in numbers only.");
-// sc.nextLine();
-// }
-// break;
-// default:
-// System.out.println("Enter valid choice");
-// break;
-// }
-// }
-// }
