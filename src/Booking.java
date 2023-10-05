@@ -39,7 +39,7 @@ public class Booking {
         this.sc = sc;
         dir = new File("User_Data", f_name + "_" + phone.substring(7));
         tickets = new ArrayList<>(Arrays.asList(dir.list()));
-        network = new Graph();
+        network = new Graph(sc);
         optionMenu();
     }
 

@@ -1,9 +1,20 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Scanner;
+import java.util.Set;
+
 
 public class Graph {
     private static final int NUM_STOPS = 33;
     private static ArrayList<Edge>[] graph;
-    static Scanner sc = new Scanner(System.in);
+    static Scanner sc ;
     static String[] stops = { "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar",
             "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar",
             "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan",
@@ -295,8 +306,9 @@ public class Graph {
         // }
     }
 
-    public Graph() {
+    public Graph(Scanner sc) {
         graph = new ArrayList[NUM_STOPS];
         initialiseRoutes();
+        Graph.sc=sc;
     }
 }

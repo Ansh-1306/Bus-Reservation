@@ -18,12 +18,10 @@ import java.util.Scanner;
 public class Admin {
     static Scanner sc;
     static Connection con;
-    Graph network;
 
     Admin(Connection con, Scanner sc) throws SQLException, ParseException, IOException {
         this.sc = sc;
         Admin.con = con;
-        network = new Graph();
 
         boolean flag = true;
         while (flag) {
