@@ -1,15 +1,27 @@
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Admin {
     Scanner sc;
     Connection con;
     Graph network;
-    Admin(Connection con,Scanner sc){
-        this.sc=sc;
-        this.con=con;
+
+    Admin(Connection con, Scanner sc) throws SQLException {
+        this.sc = sc;
+        this.con = con;
         network = new Graph();
-        
+
         boolean flag = true;
         while (flag) {
             System.out.println();
@@ -36,13 +48,13 @@ public class Admin {
                     flag = false;
                     break;
                 case 1:
-                    
+                    addBus();
                     break;
                 case 2:
-
+                    removeBus();
                     break;
                 case 3:
-
+                    viewBuses();
                     break;
                 default:
                     System.out.println(
@@ -50,5 +62,124 @@ public class Admin {
                     break;
             }
         }
+    }
+
+    public void addBus() throws SQLException, ParseException {
+        System.out.print("                  Enter Bus ID : ");
+        sc.nextLine();
+        String id = sc.nextLine();
+        ArrayList<String> busStops = new ArrayList<>();
+        ArrayList<Integer> distance = new ArrayList<>();
+        ArrayList<String> time = new ArrayList<>();
+
+        PreparedStatement ps = con.prepareStatement("select * from buses where bus_id = id");
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            System.out.println("                  Bus with " + id + " already exists.");
+            return;
+        }
+        System.out.print("                Enter Number of Stops in the Route : ");
+        int num = sc.nextInt();
+        sc.nextLine();
+        for (int i = 1; i <= num; i++) {
+            System.out.print("                  Enter Stop " + i + " : ");
+            String name = sc.nextLine();
+            busStops.add(name);
+            System.out.print("                  Enter Distance from starting stop : ");
+            int dist = sc.nextInt();
+            distance.add(dist);
+            sc.nextLine();
+            System.out.print("                  Enter Arrival Time (HH:MM:SS) : ");
+            String arrival = sc.nextLine();
+            time.add(arrival);
+        }
+        int r=0;
+        if (hasEmptyValue(busStops) && isAscendingOrder(distance) && isValidAndAscendingOrder(time)) {
+            PreparedStatement pst = con.prepareStatement("insert into buses values(?,?,?,?,?);");
+            for (int i = 0; i < busStops.size(); i++) {
+                pst.setString(1, id);
+                pst.setInt(2, i + 1);
+                pst.setString(3, busStops.get(i));
+                pst.setInt(4, distance.get(i));
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                java.util.Date date = sdf.parse(time.get(i));
+                Time x = new Time(date.getTime());
+                pst.setTime(5, x);
+                r = pst.executeUpdate();
+            }
+            if(r > 0){
+                System.out.println("                  New Bus Route Added Successfully.");
+            }else{
+                System.out.println("                  There seems to be a problem adding the bus data.");
+            }
+        }else{
+            System.out.println("                  The data you added seems to violate the conditions for addinf new routes.");
+        }
+
+    }
+
+    public void removeBus() {
+
+    }
+
+    public void viewBuses() {
+
+    }
+
+    public static boolean isValidAndAscendingOrder(List<String> list) {
+        // Check if the list is not empty
+        if (list.isEmpty()) {
+            return false;
+        }
+
+        // Define the expected time format
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        // Check if all times are valid and in ascending order
+        for (int i = 0; i < list.size() - 1; i++) {
+            String currentTimeStr = list.get(i);
+            String nextTimeStr = list.get(i + 1);
+
+            try {
+                // Parse the input time strings
+                LocalTime currentTime = LocalTime.parse(currentTimeStr, timeFormatter);
+                LocalTime nextTime = LocalTime.parse(nextTimeStr, timeFormatter);
+
+                // Check if the times are in ascending order
+                if (currentTime.isAfter(nextTime)) {
+                    return false;
+                }
+            } catch (Exception e) {
+                // Exception indicates invalid time format
+                return false;
+            }
+        }
+
+        return true; // All times are valid and in ascending order
+    }
+
+    public static boolean hasEmptyValue(List<String> list) {
+        for (String str : list) {
+            if (str == null || str.trim().isEmpty()) {
+                return false; // Found an empty or null string
+            }
+        }
+        return true; // No empty or null string found
+    }
+
+    public static boolean isAscendingOrder(List<Integer> list) {
+        // Check if the list is not empty and the first element is 0
+        if (list.isEmpty() || list.get(0) != 0) {
+            return false;
+        }
+
+        // Check if the remaining elements are in ascending order
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i) <= list.get(i - 1)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
