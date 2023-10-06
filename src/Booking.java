@@ -161,7 +161,6 @@ public class Booking {
                         System.out.println("\n                  " + RED + "Enter Valid Seat Number." + RESET + "\n");
                     }
                 }
-                stringToFile(seatcon, id);
                 double x = 0, y = 0;
                 PreparedStatement ps1 = con
                         .prepareStatement("select distance from buses where Bus_id = ? and Stop_name = ?;");
