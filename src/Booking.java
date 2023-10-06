@@ -460,7 +460,7 @@ public class Booking {
     }
 
     private void printTicket(String ticketNo, String source, String destination, double price, double distance,String seats, String busId) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(ticketNo+".txt"))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(new File(dir,ticketNo+".txt")))) {
             writer.println("        Ticket No   : " + ticketNo);
             writer.println("        Bus ID      : " + busId);
             writer.println("        Source      : " + source);

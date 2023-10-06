@@ -1,0 +1,7 @@
+        Ticket No   : 5017349
+        Bus ID      : 001
+        Source      : Ahmedabad
+        Destination : Surat
+        Seats       : 3
+        Price       : Rs1050.0
+        Distance    : 280.0 km
