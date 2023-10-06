@@ -15,11 +15,14 @@ public class Graph {
     private static final int NUM_STOPS = 33;
     private static ArrayList<Edge>[] graph;
     static Scanner sc ;
+
+    // Array to store stop names.
     static String[] stops = { "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar",
             "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar",
             "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan",
             "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad" };
 
+    // static class to define edges in graph.
     static class Edge {
         String src;
         String dst;
@@ -32,6 +35,7 @@ public class Graph {
         }
     }
 
+    // Method to implement and initialise graph.
     private static void initialiseRoutes() {
         for (int i = 0; i < graph.length; i++) {
             graph[i] = new ArrayList<>();
@@ -214,6 +218,7 @@ public class Graph {
 
     }
 
+    // Method to display stops.
     public static void displayStops() throws InterruptedException {
         ArrayList<String> stopNames = new ArrayList<>(Arrays.asList(stops));
         System.out
@@ -244,6 +249,7 @@ public class Graph {
 
     }
 
+    // To find index of stop in the array.
     private static int find_index(String stop) {
         for (int i = 0; i < NUM_STOPS; i++) {
             if (stops[i].equalsIgnoreCase(stop)) {
@@ -253,6 +259,7 @@ public class Graph {
         return -1;
     }
 
+    // Modified dijkstra's Algorithm to fin shortest path from source to destination.
     public static int findShortestPath(String src, String dst) {
         Map<String, Integer> distance = new HashMap<>();
         Map<String, String> previous = new HashMap<>();

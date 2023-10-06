@@ -40,6 +40,7 @@ class Register_Login {
                     System.exit(0);
                     break;
                 case 1:
+                    // Register Yourself to the database
                     register();
                     break;
 
@@ -51,12 +52,14 @@ class Register_Login {
                     break;
                 default:
                     System.out.println(
-                            "\n                  "+RED+"Enter number corresponding to below option."+RESET+"\n");
+                            "\n                  " + RED + "Enter number corresponding to below option." + RESET
+                                    + "\n");
                     break;
             }
         }
     }
 
+    // Register to the database
     private static void register() throws SQLException {
 
         sc.nextLine();
@@ -77,12 +80,12 @@ class Register_Login {
                 }
                 break;
             } else {
-                System.out.println("\n                  "+RED+"Enter valid 10 digit mobile number."+RESET+"\n");
+                System.out.println("\n                  " + RED + "Enter valid 10 digit mobile number." + RESET + "\n");
             }
             flag--;
             if (flag == 0) {
-                System.out.println("\n                  "+RED+"Registration Failed.");
-                System.out.println("                  Please Try Again."+RESET+"\n");
+                System.out.println("\n                  " + RED + "Registration Failed.");
+                System.out.println("                  Please Try Again." + RESET + "\n");
                 return;
             }
         }
@@ -107,7 +110,7 @@ class Register_Login {
             if (gender.equals("Male") || gender.equals("Female")) {
                 break;
             }
-            System.out.println("\n                  "+RED+"Enter Valid Gender (Male / Female)."+RESET+"\n");
+            System.out.println("\n                  " + RED + "Enter Valid Gender (Male / Female)." + RESET + "\n");
         }
         int age;
         while (true) {
@@ -116,7 +119,7 @@ class Register_Login {
             if (age >= 16 && age < 150) {
                 break;
             }
-            System.out.println("\n                  "+RED+"Enter Valid Age More Than 16."+RESET+"\n");
+            System.out.println("\n                  " + RED + "Enter Valid Age More Than 16." + RESET + "\n");
         }
         sc.nextLine();
         String pswd = "";
@@ -127,12 +130,12 @@ class Register_Login {
             if (pswd.length() == 4) {
                 break;
             } else {
-                System.out.println("\n                  "+RED+"Enter valid 4 digit password."+RESET+"\n");
+                System.out.println("\n                  " + RED + "Enter valid 4 digit password." + RESET + "\n");
             }
             flag--;
             if (flag == 0) {
-                System.out.println("\n                  "+RED+"Registration Failed.");
-                System.out.println("                  Please Try Again."+RESET+"\n");
+                System.out.println("\n                  " + RED + "Registration Failed.");
+                System.out.println("                  Please Try Again." + RESET + "\n");
                 return;
             }
         }
@@ -146,17 +149,18 @@ class Register_Login {
         ps2.setInt(6, age);
         int c = ps2.executeUpdate();
         if (c == 1) {
-            System.out.println("\n                  "+GREEN+"You have been successfully registered.");
-            System.out.println("                  Please login using username and password."+RESET+"\n");
+            System.out.println("\n                  " + GREEN + "You have been successfully registered.");
+            System.out.println("                  Please login using username and password." + RESET + "\n");
 
             File file = new File("User_Data", f_name + "_" + phone.substring(7));
             file.mkdir();
 
         } else {
-            System.out.println("\n                  "+RED+"Registration Failed !!! Try Again."+RESET+"\n");
+            System.out.println("\n                  " + RED + "Registration Failed !!! Try Again." + RESET + "\n");
         }
     }
 
+    // Login using phone number and password
     private static void login() throws Exception {
         sc.nextLine();
         String phone = "";
@@ -177,30 +181,30 @@ class Register_Login {
                     System.out.print("                  Enter password : ");
                     String pass = sc.nextLine();
                     if (pswd.equals(pass)) {
-                        System.out.println("\n                  "+GREEN+"Logged in successfully."+RESET+"\n");
+                        System.out.println("\n                  " + GREEN + "Logged in successfully." + RESET + "\n");
                         new Booking(phone, f_name, l_name, pswd, gender, age, con, sc);
                         return;
                     } else {
-                        System.out.println("\n                  "+RED+"Incorrect password."+RED+"\n");
+                        System.out.println("\n                  " + RED + "Incorrect password." + RESET + "\n");
                     }
                 } else {
                     System.out.println(
-                            "\n                  "+RED+"The entered phone number has not been registered.");
-                    System.out.println("                  Please Register First!"+RESET+"\n");
+                            "\n                  " + RED + "The entered phone number has not been registered.");
+                    System.out.println("                  Please Register First!" + RESET + "\n");
                     return;
                 }
             } else {
-                System.out.println("\n                  "+RED+"Enter valid 10 digit mobile number."+RESET+"\n");
+                System.out.println("\n                  " + RED + "Enter valid 10 digit mobile number." + RESET + "\n");
             }
             flag--;
             if (flag == 0) {
-                System.out.println("\n                  "+RED+"Login Failed.");
-                System.out.println("                  Please Try Again."+RESET+"\n");
+                System.out.println("\n                  " + RED + "Login Failed.");
+                System.out.println("                  Please Try Again." + RESET + "\n");
                 return;
             }
         }
     }
-
+    // Admin Login to get access to the bus routes.
     private static void admin_login() throws SQLException, ParseException, IOException {
         sc.nextLine();
         System.out.print("                  Enter Admin Username : ");
@@ -211,21 +215,23 @@ class Register_Login {
             System.out.println();
             new Admin(con, sc);
         } else {
-            System.out.println("\n                  "+RED+"Incorrect Username or Password.");
-            System.out.println("                  Please Try Again."+RESET+"\n");
+            System.out.println("\n                  " + RED + "Incorrect Username or Password.");
+            System.out.println("                  Please Try Again." + RESET + "\n");
 
         }
     }
 
+    // Method to check if the entered number is valid or not.
     private static boolean isValidNumber(String phoneNumber) {
         String regex = "^[6-9]\\d{9}$";
         return phoneNumber.matches(regex);
     }
 
+    // Method to check if names are valid or not.
     private static boolean areAllAlphabets(String input) {
         for (char c : input.toCharArray()) {
             if (!Character.isLetter(c)) {
-                System.out.println("\n                  "+RED+"Name must only contain letters."+RESET+" \n");
+                System.out.println("\n                  " + RED + "Name must only contain letters." + RESET + " \n");
                 return false;
             }
         }

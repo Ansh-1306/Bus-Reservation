@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class Payment {
+    // Payment method for paying tickets fees.
     public static boolean pay(double price, Scanner sc, String pswd) {
 
         System.out.println("                  Amount : " + price);

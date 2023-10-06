@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -66,18 +67,22 @@ public class Booking {
             switch (choice) {
                 case 0:
                     flag = false;
-                    System.out.println("                  Logged Out !!");
+                    System.out.println("                  " + RED + "Logged Out !!" + RESET + "\n");
                     break;
                 case 1:
+                    // To book Ticket
                     bookTicket();
                     break;
                 case 2:
+                    // To cancel Ticket
                     cancelTicket();
                     break;
                 case 3:
+                    // To view all Tickets
                     viewTicket();
                     break;
                 case 4:
+                    // To book full bus
                     bookBus();
                     break;
                 default:
@@ -110,7 +115,8 @@ public class Booking {
         }
         al1.retainAll(al2);
         if (al1.isEmpty()) {
-            System.out.println("                  No Direct Bus From " + start + " to " + end);
+            System.out.println(
+                    "\n                  " + RED + "No Direct Bus From " + start + " to " + end + RESET + "\n");
             System.out.println();
             System.out.println();
             ArrayList<String> ids = Admin.viewBuses();
@@ -121,26 +127,41 @@ public class Booking {
                 start = sc.nextLine();
                 System.out.print("                  Enter Destination : ");
                 end = sc.nextLine();
-                String seatCon = fileToString(id);
+                String seatcon = fileToString(id);
                 System.out.print("                  Enter Number Of Seats : ");
                 int seats = sc.nextInt();
-                for (int i = 1; i <= seats; i++) {
+                sc.nextLine();
+                String allseats = "";
+                System.out.println(seatcon);
+                for (int i = 1; i <= seats;) {
                     System.out.print("                  Enter Seat " + i + " : ");
                     String s = sc.nextLine();
+                    try {
+                        int temp = Integer.parseInt(s);
+                        if (temp < 1 || temp > 60) {
+                            throw new Exception();
+                        }
+                    } catch (Exception e) {
+                        System.out.println(
+                                "\n                  " + RED + "Enter Valid number between 1 and 60." + RESET + "\n");
+                        continue;
+                    }
                     if (s.length() == 1)
                         s = "0" + s;
                     if (s.isEmpty()) {
-                        i--;
+                        System.out.println(
+                                "\n                  " + RED + "Enter Valid number between 1 and 60." + RESET + "\n");
                         continue;
                     }
-                    if (seatCon.indexOf(s) != -1) {
-                        seatCon = seatCon.replaceFirst(s, "XX");
+                    if (seatcon.indexOf(s) != -1) {
+                        allseats = allseats + " " + s;
+                        seatcon = seatcon.replaceFirst(s, "XX");
+                        i++;
                     } else {
-                        System.out.println("                  Enter Valid Seat Number.");
-                        i--;
+                        System.out.println("\n                  " + RED + "Enter Valid Seat Number." + RESET + "\n");
                     }
                 }
-                stringToFile(seatCon, id);
+                stringToFile(seatcon, id);
                 double x = 0, y = 0;
                 PreparedStatement ps1 = con
                         .prepareStatement("select distance from buses where Bus_id = ? and Stop_name = ?;");
@@ -152,11 +173,12 @@ public class Booking {
                 }
                 ps1.setString(1, id);
                 ps1.setString(2, end);
+                rs=ps1.executeQuery();
                 while (rs.next()) {
                     y = rs.getInt(1);
                 }
                 x = Math.abs(x - y);
-                double total_price =seats * x * 1.25;
+                double total_price = seats * x * 1.25;
 
                 String ch = "";
                 while (!(ch.equalsIgnoreCase("yes") || ch.equalsIgnoreCase("no"))) {
@@ -168,7 +190,11 @@ public class Booking {
                         if (Payment.pay(total_price, sc, pswd)) {
                             System.out.println("\n                  " + GREEN
                                     + "Payment Successful.\n                  Bus Booked Successfully." + RESET + "\n");
-                            printTicket();
+
+                            stringToFile(seatcon, id);
+                            String t_no = Integer.toString((int) (Math.random() * 10000000));
+                            tickets.add(t_no);
+                            printTicket(t_no,start,end,total_price,x,Integer.toString(seats),id);
                         } else {
                             System.out.println("\n                  " + RED
                                     + "Payment Failure.\n                  Booking Cancelled." + RESET + "\n");
@@ -177,6 +203,8 @@ public class Booking {
                         System.out.println("\n                  " + RED + "Booking Cancelled!" + RESET + "\n");
                     }
                 }
+            } else {
+                System.out.println("\n                  " + RED + "Enter Valid Bus ID." + RESET + "\n");
             }
         } else {
             for (int i = 0; i < al1.size(); i++) {
@@ -194,26 +222,38 @@ public class Booking {
             System.out.print("                  Enter Bus Id : ");
             String id = sc.nextLine();
             if (al1.contains(id)) {
-                String seatCon = fileToString(id);
+                String seatcon = fileToString(id);
                 System.out.print("                  Enter Number Of Seats : ");
                 int seats = sc.nextInt();
-                for (int i = 1; i <= seats; i++) {
+                sc.nextLine();
+                String allseats = "";
+                System.out.println(seatcon);
+
+                for (int i = 1; i <= seats;) {
                     System.out.print("                  Enter Seat " + i + " : ");
                     String s = sc.nextLine();
+                    try {
+                        int temp = Integer.parseInt(s);
+                        if (temp < 1 || temp > 60) {
+                            throw new Exception();
+                        }
+                    } catch (Exception e) {
+                        System.out.println(
+                                "\n                  " + RED + "Enter Valid number between 1 and 60." + RESET + "\n");
+                    }
                     if (s.length() == 1)
                         s = "0" + s;
                     if (s.isEmpty()) {
-                        i--;
                         continue;
                     }
-                    if (seatCon.indexOf(s) != -1) {
-                        seatCon = seatCon.replaceFirst(s, "XX");
+                    if (seatcon.indexOf(s) != -1) {
+                        allseats = allseats + " " + s;
+                        seatcon = seatcon.replaceFirst(s, "XX");
+                        i++;
                     } else {
-                        System.out.println("                  Enter Valid Seat Number.");
-                        i--;
+                        System.out.println("\n                  " + RED + "Enter Valid Seat Number." + RESET + "\n");
                     }
                 }
-                stringToFile(seatCon, id);
                 double x = 0, y = 0;
                 PreparedStatement ps1 = con
                         .prepareStatement("select distance from buses where Bus_id = ? and Stop_name = ?;");
@@ -221,15 +261,16 @@ public class Booking {
                 ps1.setString(2, start);
                 ResultSet rs = ps1.executeQuery();
                 while (rs.next()) {
-                    x = rs.getInt(1);
+                    x = rs.getInt("distance");
                 }
                 ps1.setString(1, id);
                 ps1.setString(2, end);
+                rs=ps1.executeQuery();
                 while (rs.next()) {
-                    y = rs.getInt(1);
+                    y = rs.getInt("distance");
                 }
-                x = Math.abs(x - y);
-                double total_price =seats* x * 1.25;
+                x = Math.abs(y - x);
+                double total_price = seats * x * 1.25;
                 String ch = "";
                 while (!(ch.equalsIgnoreCase("yes") || ch.equalsIgnoreCase("no"))) {
                     System.out.println();
@@ -240,7 +281,10 @@ public class Booking {
                         if (Payment.pay(total_price, sc, pswd)) {
                             System.out.println("\n                  " + GREEN
                                     + "Payment Successful.\n                  Bus Booked Successfully." + RESET + "\n");
-                            printTicket();
+                            stringToFile(seatcon, id);
+                            String t_no = Integer.toString((int) (Math.random() * 10000000));
+                            tickets.add(t_no);
+                            printTicket(t_no,start,end,total_price,x,Integer.toString(seats),id);
                         } else {
                             System.out.println("\n                  " + RED
                                     + "Payment Failure.\n                  Booking Cancelled." + RESET + "\n");
@@ -249,24 +293,28 @@ public class Booking {
                         System.out.println("\n                  " + RED + "Booking Cancelled!" + RESET + "\n");
                     }
                 }
+            } else {
+                System.out.println("\n                  " + RED + "Enter Valid Bus ID." + RESET + "\n");
+
             }
         }
     }
 
     private String fileToString(String id) throws IOException {
-        String seatCon = "";
+        String seatcon = "";
         FileReader fr = new FileReader(id + ".txt");
         BufferedReader br = new BufferedReader(fr);
         String s;
         while ((s = br.readLine()) != null) {
-            seatCon = seatCon + s + "\n";
+            seatcon = seatcon + s + "\n";
         }
-        return seatCon;
+        br.close();
+        return seatcon;
     }
 
-    private void stringToFile(String seatCon, String id) throws IOException {
+    private void stringToFile(String seatcon, String id) throws IOException {
         FileWriter fw = new FileWriter(new File(id + ".txt"));
-        fw.write(seatCon);
+        fw.write(seatcon);
         fw.close();
     }
 
@@ -352,7 +400,10 @@ public class Booking {
                     if (Payment.pay(total_price, sc, pswd)) {
                         System.out.println("\n                  " + GREEN
                                 + "Payment Successful.\n                  Bus Booked Successfully." + RESET + "\n");
-                        printTicket();
+                                String t_no = Integer.toString((int)(Math.random()*1000000));
+                                tickets.add(t_no);
+
+                        printTicket(t_no, Graph.stops[start - 1],Graph.stops[end-1],total_with_gst,distance,"FULL BUS",Integer.toString((int)(Math.random()*1000)));
                     } else {
                         System.out.println("\n                  " + RED
                                 + "Payment Failure.\n                  Booking Cancelled." + RESET + "\n");
@@ -409,7 +460,19 @@ public class Booking {
 
     }
 
-    private void printTicket() {
+    private void printTicket(String ticketNo, String source, String destination, double price, double distance,String seats, String busId) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(ticketNo+".txt"))) {
+            writer.println("        Ticket No   : " + ticketNo);
+            writer.println("        Bus ID      : " + busId);
+            writer.println("        Source      : " + source);
+            writer.println("        Destination : " + destination);
+            writer.println("        Seats       : " + seats);
+            writer.println("        Price       : Rs" + price);
+            writer.println("        Distance    : " + distance + " km");
 
+            System.out.println("\n                  "+GREEN+"Ticket printed successfully to " + ticketNo+".txt"+RESET+"\n");
+        } catch (IOException e) {
+            System.err.println("\n                  "+RED+"Error writing to file: " + e.getMessage()+RESET+"\n");
+        }
     }
 }

@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,11 +17,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Admin {
+    
+    static String RED = "\u001B[31;1;3m";
+    static String RESET = "\u001B[0m";
+    static String GREEN = "\u001B[32;1;3m";
     static Scanner sc;
     static Connection con;
 
     Admin(Connection con, Scanner sc) throws SQLException, ParseException, IOException {
-        this.sc = sc;
+        Admin.sc = sc;
         Admin.con = con;
 
         boolean flag = true;
@@ -49,17 +54,20 @@ public class Admin {
                     flag = false;
                     break;
                 case 1:
+                    // To add new bus routes.
                     addBus();
                     break;
                 case 2:
+                    // To remove existing bus routes.
                     removeBus();
                     break;
                 case 3:
+                    // To view all routes.
                     viewBuses();
                     break;
                 default:
                     System.out.println(
-                            "\n                  \u001B[31;1;3mEnter number corresponding to below option.\u001B[0m\n");
+                            "\n                  "+RED+"Enter number corresponding to below option."+RESET+"\n");
                     break;
             }
         }
@@ -72,12 +80,12 @@ public class Admin {
         ArrayList<String> busStops = new ArrayList<>();
         ArrayList<Integer> distance = new ArrayList<>();
         ArrayList<String> time = new ArrayList<>();
-
+        // Check if the bus_id already exists.
         PreparedStatement ps = con.prepareStatement("select * from buses where bus_id = ?;");
         ps.setString(1, id);
         ResultSet rs = ps.executeQuery();
         if (rs.next()) {
-            System.out.println("                  Bus with " + id + " already exists.");
+            System.out.println("\n                  "+RED+"Bus with " + id + " already exists."+RESET+"\n");
             return;
         }
         System.out.print("                  Enter Number of Stops in the Route : ");
@@ -107,6 +115,7 @@ public class Admin {
             time.add(arrival);
         }
         int r = 0;
+        // Checkking if data entered is valid or not and inserting it into the database.
         if (hasEmptyValue(busStops) && isAscendingOrder(distance) && isValidAndAscendingOrder(time)) {
             PreparedStatement pst = con.prepareStatement("insert into buses values(?,?,?,?,?);");
             for (int i = 0; i < busStops.size(); i++) {
@@ -121,21 +130,24 @@ public class Admin {
                 r = pst.executeUpdate();
             }
             if (r > 0) {
-                System.out.println("                  New Bus Route Added Successfully.");
+                System.out.println("\n                  "+GREEN+"New Bus Route Added Successfully."+RESET+"\n");
                 File file = new File(id + ".txt");
                 file.createNewFile();
                 seatInitialise(file);
             } else {
-                System.out.println("                  There seems to be a problem adding the bus data.");
+                System.out.println("\n                  "+RED+"There seems to be a problem adding the bus data."+RESET+"\n");
             }
         } else {
             System.out.println(
-                    "                  The data you added seems to violate the conditions for addinf new routes.");
+                    "\n                  "+RED+"The data you added seems to violate the conditions for addinf new routes."+RESET+"\n");
         }
     }
 
-    private static void seatInitialise(File file) throws IOException{
+    // Initialise seating configuration in buses
+    private static void seatInitialise(File file) throws IOException {
         FileWriter fw = new FileWriter(file);
+
+
         fw.write(" _______________________\n");
         fw.write("|                       |\n");
         fw.write("| [01] [02]   [03] [04] |\n");
@@ -161,31 +173,34 @@ public class Admin {
         System.out.print("                  Enter Bus ID : ");
         sc.nextLine();
         String id = sc.nextLine();
-        System.out.print("                  Confirm Deletion? (Yes/No):");
+        System.out.print("                  Confirm Deletion? (" + GREEN + "Yes" + RESET + "/" + RED + "No"+ RESET + ") : ");
         String c = sc.nextLine();
         if (c.equalsIgnoreCase("no")) {
-            System.out.println("                  Deletion Cancelled!");
+            System.out.println("\n                  "+GREEN+"Deletion Cancelled!"+RESET+"\n");
         } else {
             PreparedStatement ps = con.prepareStatement("delete from buses where Bus_id = ?;");
             ps.setString(1, id);
             int r = ps.executeUpdate();
+            // check if routes is present and delete it.
             if (r > 0) {
-                System.out.println("                  Bus deleted Successfully.");
+                System.out.println("\n                  "+RED+"Bus deleted Successfully."+RESET+"\n");
                 File file = new File(id + ".txt");
                 file.delete();
             } else {
-                System.out.println("                  No Buses with given Bus ID found.");
+                System.out.println("\n                  "+RED+"No Buses with given Bus ID found."+RESET+"\n");
             }
         }
     }
 
     public static ArrayList<String> viewBuses() throws SQLException {
+         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/BusMNG", "root", "");
         Statement st = con.createStatement();
         ArrayList<String> ids = new ArrayList<>();
         ResultSet rs = st.executeQuery("select Bus_id from buses group by Bus_id;");
         while (rs.next()) {
             ids.add(rs.getString(1));
         }
+        // View all bus routes.
         for (int i = 0; i < ids.size(); i++) {
             PreparedStatement ps = con.prepareStatement("select * from buses where Bus_id = ?;");
             ps.setString(1, ids.get(i));
