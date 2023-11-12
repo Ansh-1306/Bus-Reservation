@@ -1,0 +1,7 @@
+        Ticket No   : 9022328
+        Bus ID      : 001
+        Source      : Ahmedabad
+        Destination : Surat
+        Seats       : 5
+        Price       : Rs1750.0
+        Distance    : 280.0 km

@@ -1,0 +1,7 @@
+        Ticket No   : 63715
+        Bus ID      : 438
+        Source      : Ahmedabad
+        Destination : Amreli
+        Seats       : FULL BUS
+        Price       : Rs7277.0
+        Distance    : 210.0 km

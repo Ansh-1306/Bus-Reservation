@@ -1,0 +1,7 @@
+        Ticket No   : 6580667
+        Bus ID      : 002
+        Source      : Mehsana
+        Destination : Kutch
+        Seats       : 2
+        Price       : Rs500.0
+        Distance    : 200.0 km

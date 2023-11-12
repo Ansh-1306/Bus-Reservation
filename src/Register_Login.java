@@ -37,6 +37,8 @@ class Register_Login {
             }
             switch (choice) {
                 case 0:
+                    con.close();
+                    sc.close();
                     System.exit(0);
                     break;
                 case 1:
@@ -57,6 +59,7 @@ class Register_Login {
                     break;
             }
         }
+
     }
 
     // Register to the database
@@ -204,6 +207,7 @@ class Register_Login {
             }
         }
     }
+
     // Admin Login to get access to the bus routes.
     private static void admin_login() throws SQLException, ParseException, IOException {
         sc.nextLine();

@@ -419,7 +419,9 @@ public class Booking {
 
     private void cancelTicket() {
         System.out.print("                  Enter Ticket Number : ");
+        sc.nextLine();
         String t_no = sc.nextLine();
+        t_no=t_no+".txt";
         if (tickets.contains(t_no)) {
             String ch = "";
             while (!(ch.equalsIgnoreCase("yes") || ch.equalsIgnoreCase("no"))) {
@@ -428,7 +430,7 @@ public class Booking {
                 ch = sc.nextLine();
                 if (ch.equalsIgnoreCase("yes")) {
                     tickets.remove(t_no);
-                    new File(t_no + ".txt").delete();
+                    new File(dir,t_no).delete();
                 } else {
                     System.out
                             .println("\n                  " + RED + "Cancellation Process Aborted !!" + RESET + "\nga");
@@ -444,8 +446,9 @@ public class Booking {
             System.out.println("\n                  " + RED + "No Tickets Found." + RESET + "\n");
             return;
         }
+        System.out.println();
         for (String t : tickets) {
-            File f = new File(t + ".txt");
+            File f = new File(dir,t);
             BufferedReader br = new BufferedReader(new FileReader(f));
             String s;
             while ((s = br.readLine()) != null) {
